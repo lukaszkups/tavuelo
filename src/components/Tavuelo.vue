@@ -20,7 +20,17 @@
             v-for='column in computedColumns'
             :key='`${row.id}-${column.id}`'
           >
-            <div class='cell'>{{ row[column.dataSource] }}</div>
+            <div
+              v-if='!column.type || column.type === "text"'
+              class='cell'
+            >{{ row[column.dataSource] }}</div>
+            <div
+              v-else-if='column.type === "bool"'
+              class='cell'
+            >
+              <span v-if='row[column.dataSource]'>&check;</span>
+              <span v-else>&cross;</span>
+            </div>
           </td>
         </tr>
       </tbody>
