@@ -1,17 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <tavuelo
+      :columns='tableColumns'
+      :data='tableData'
+      :per-page='11'
+    ></tavuelo>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import Tavuelo from './components/Tavuelo.vue';
+import { exampleTableData } from './helpers/dataHelper';
 
 export default {
   name: 'app',
+  data() {
+    return {
+      tableColumns: [
+        { title: 'First name', dataSource: 'first_name' },
+        { title: 'Last name', dataSource: 'last_name' },
+        { title: 'Age', dataSource: 'age' },
+        { title: 'Location', dataSource: 'location' },
+      ],
+    };
+  },
+  computed: {
+    tableData() {
+      return exampleTableData();
+    },
+  },
   components: {
-    HelloWorld,
+    Tavuelo,
   },
 };
 </script>
