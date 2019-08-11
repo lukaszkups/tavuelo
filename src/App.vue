@@ -4,6 +4,8 @@
       :columns='tableColumns'
       :data='tableData'
       :per-page='11'
+      :has-search='true'
+      :searchColumns='["first_name", "last_name", "location"]'
     ></tavuelo>
   </div>
 </template>

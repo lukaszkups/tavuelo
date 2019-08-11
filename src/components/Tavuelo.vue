@@ -1,11 +1,17 @@
 <template>
   <div class='tavuelo__wrapper'>
+    <div v-if='hasSearch' class='tavuelo__search'>
+      <input
+        v-model='searchQuery'
+        placeholder='Search'
+      />
+    </div>
     <table class='tavuelo'>
       <thead>
         <tr>
           <th
             v-for='column in computedColumns'
-            :key='column.id'
+            :key='column.tavuelo_id'
           >
             {{ column.title }}
           </th>
@@ -14,11 +20,11 @@
       <tbody>
         <tr
           v-for='row in computedData'
-          :key='row.id'
+          :key='row.tavuelo_id'
         >
           <td
             v-for='column in computedColumns'
-            :key='`${row.id}-${column.id}`'
+            :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
           >
             <div
               v-if='!column.type || column.type === "text"'
@@ -77,47 +83,80 @@
   </div>
 </template>
 <script>
+/* eslint-disable max-len, arrow-body-style, arrow-parens, array-callback-return */
+
 export default {
   name: 'Tavuelo',
   data() {
     return {
       activePage: 0,
+      searchQuery: '',
     };
   },
   props: {
     data: {
-      type: [Array, Function],
+      type: Array,
       default: () => [],
     },
     columns: {
-      type: [Array, Function],
+      type: Array,
       default: () => [],
     },
     perPage: {
       type: Number,
       default: 0,
     },
+    hasSearch: {
+      type: Boolean,
+      default: false,
+    },
+    searchColumns: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     computedColumns() {
       if (this.columns && this.columns.length) {
-        return this.columns.map((col, index) => ({ ...col, id: index }));
+        return this.columns.map((col, index) => ({ ...col, tavuelo_id: index }));
       }
       return [];
     },
     indexedData() {
       if (this.data && this.data.length) {
-        return this.data.map((row, index) => ({ ...row, id: index }));
+        return this.data.map((row, index) => ({ ...row, tavuelo_id: index }));
+      }
+      return [];
+    },
+    filteredData() {
+      if (this.indexedData && this.indexedData.length) {
+        let indexedDataCopy = [...this.indexedData];
+        indexedDataCopy = indexedDataCopy.filter(entry => {
+          /* eslint-disable-next-line no-unused-vars */
+          let found = false;
+          this.searchColumns.map(searchColumn => {
+            if (entry[searchColumn].includes(this.searchQuery)) {
+              found = true;
+            }
+          });
+          return found;
+        });
       }
       return [];
     },
     computedData() {
       if (this.indexedData && this.indexedData.length) {
+        let indexedDataCopy = [];
+        if (this.hasSearch && this.searchColumns && this.searchColumns.length && this.searchQuery && this.searchQuery.length) {
+          indexedDataCopy = [...this.filteredData];
+        } else {
+          indexedDataCopy = [...this.indexedData];
+        }
         if (this.hasPagination) {
           const startIndex = ((this.activePage + 1) * this.perPage) - 1;
-          return this.indexedData.slice(startIndex, startIndex + this.perPage);
+          return indexedDataCopy.slice(startIndex, startIndex + this.perPage);
         }
-        return this.indexedData;
+        return indexedDataCopy;
       }
       return [];
     },
@@ -125,11 +164,11 @@ export default {
       return !Number.isNaN(this.perPage) && this.perPage > 0;
     },
     pageList() {
-      if (this.hasPagination && this.indexedData && this.indexedData.length) {
-        if (this.perPage >= this.indexedData.length) {
+      if (this.hasPagination && this.computedData && this.computedData.length) {
+        if (this.perPage >= this.computedData.length) {
           return [0];
         }
-        const amountOfPages = Math.floor(this.indexedData.length / this.perPage);
+        const amountOfPages = Math.floor(this.computedData.length / this.perPage);
         return [...Array(amountOfPages).keys()];
       }
       return [];
