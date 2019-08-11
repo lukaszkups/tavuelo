@@ -30,11 +30,15 @@
       class='tavuelo__pagination'
     >
       <li
-        class='tavuelo__pagination--first-page'
+        :class='["tavuelo__pagination--first-page", {
+          "disabled": !activePage || activePage === 0
+        }]'
         @click='!Number.isNaN(activePage) && activePage !== 0 ? changePage(0) : false'
       >&laquo;</li>
       <li
-        class='tavuelo__pagination--previous-page'
+        :class='["tavuelo__pagination--previous-page", {
+          "disabled": !activePage || activePage === 0
+        }]'
         @click='!Number.isNaN(activePage) && activePage !== 0 ? changePage(activePage - 1) : false'
       >&lsaquo;</li>
       <li
@@ -44,13 +48,17 @@
         @click='changePage(page)'
       >{{ page + 1 }}</li>
       <li
-        class='tavuelo__pagination--next-page'
+        :class='["tavuelo__pagination--next-page", {
+          "disabled": isNaN(activePage) || activePage === lastPage
+        }]'
         @click='!Number.isNaN(activePage) && activePage < lastPage
         ? changePage(activePage + 1)
         : false'
       >&rsaquo;</li>
       <li
-        class='tavuelo__pagination--last-page'
+        :class='["tavuelo__pagination--last-page", {
+          "disabled": isNaN(activePage) || activePage === lastPage
+        }]'
         @click='!Number.isNaN(activePage) && activePage !== lastPage
           ? changePage(lastPage)
           : false'
@@ -168,4 +176,9 @@ export default {
       &.active-page
         font-weight: bold
         text-decoration: underline
+
+      &.disabled
+        color: silver
+        &:hover
+          cursor: not-allowed
 </style>
