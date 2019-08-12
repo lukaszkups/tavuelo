@@ -110,6 +110,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    searchCaseSensitive: {
+      type: Boolean,
+      default: false,
+    },
     searchColumns: {
       type: Array,
       default: () => [],
@@ -141,6 +145,7 @@ export default {
           });
           return found;
         });
+        return indexedDataCopy;
       }
       return [];
     },
@@ -164,11 +169,17 @@ export default {
       return !Number.isNaN(this.perPage) && this.perPage > 0;
     },
     pageList() {
-      if (this.hasPagination && this.computedData && this.computedData.length) {
-        if (this.perPage >= this.computedData.length) {
+      if (this.hasPagination && this.indexedData && this.indexedData.length) {
+        if (this.perPage >= this.indexedData.length) {
           return [0];
         }
-        const amountOfPages = Math.floor(this.computedData.length / this.perPage);
+        let indexedDataCopy = [];
+        if (this.hasSearch && this.searchColumns && this.searchColumns.length && this.searchQuery && this.searchQuery.length) {
+          indexedDataCopy = [...this.filteredData];
+        } else {
+          indexedDataCopy = [...this.indexedData];
+        }
+        const amountOfPages = Math.floor(indexedDataCopy.length / this.perPage);
         return [...Array(amountOfPages).keys()];
       }
       return [];
@@ -230,4 +241,11 @@ export default {
         color: silver
         &:hover
           cursor: not-allowed
+
+  .tavuelo__search
+    text-align: right
+
+    input
+      margin: 0 0 15px 0
+      padding: 5px
 </style>
