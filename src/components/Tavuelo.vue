@@ -140,6 +140,7 @@ export default {
           let found = false;
           this.searchColumns.map(searchColumn => {
             if (entry[searchColumn].includes(this.searchQuery)) {
+              console.log(entry[searchColumn], searchColumn);
               found = true;
             }
           });
