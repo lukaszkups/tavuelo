@@ -24,7 +24,7 @@ export default {
         { title: 'Last name', dataSource: 'last_name' },
         { title: 'Age', dataSource: 'age' },
         { title: 'Location', dataSource: 'location' },
-        { title: 'Active', dataSource: 'active', type: 'bool' },
+        { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active' },
       ],
     };
   },

@@ -13,7 +13,13 @@
             v-for='column in computedColumns'
             :key='column.tavuelo_id'
           >
-            {{ column.title }}
+            <div v-if='column.tooltip'>
+              <div class='tavuelo-tooltip tavuelo-tooltips'>
+                {{ column.title }}
+                <span>{{ column.tooltip }}</span>
+              </div>
+            </div>
+            <div v-else>{{ column.title }}</div>
           </th>
         </tr>
       </thead>
@@ -250,4 +256,41 @@ export default {
     input
       margin: 0 0 15px 0
       padding: 5px
+
+  // tooltip styles
+  .tavuelo-tooltip
+    cursor: help
+    &.tavuelo-tooltips
+      position: relative
+      display: inline
+      span
+        position: absolute
+        width: 140px
+        color: #FFFFFF
+        background: #000000
+        // height: 30px
+        line-height: 11px
+        font-size: 10px
+        text-align: center
+        visibility: hidden
+        border-radius: 6px
+        font-weight: 400
+        padding: 5px
+        &:after
+          content: ''
+          position: absolute
+          top: 100%
+          left: 50%
+          margin-left: -8px
+          width: 0
+          height: 0
+          border-top: 8px solid #000000
+          border-right: 8px solid transparent
+          border-left: 8px solid transparent
+    &:hover.tavuelo-tooltips span
+      visibility: visible
+      bottom: 30px
+      left: 50%
+      margin-left: -76px
+      z-index: 999
 </style>
