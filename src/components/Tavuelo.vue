@@ -116,6 +116,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    customFiltering: {
+      type: Function,
+    },
     searchCaseSensitive: {
       type: Boolean,
       default: false,
@@ -139,14 +142,16 @@ export default {
       return [];
     },
     filteredData() {
-      if (this.indexedData && this.indexedData.length) {
+      if (this.customFiltering && typeof this.customFiltering === 'function') {
+        return this.customFiltering([...this.indexedData], this.searchQuery)
+      } else if (this.indexedData && this.indexedData.length) {
         let indexedDataCopy = [...this.indexedData];
         indexedDataCopy = indexedDataCopy.filter(entry => {
           if (this.searchCaseSensitive) {
-            return this.searchColumns.find(searchColumn => entry[searchColumn].includes(this.searchQuery));
+            return this.searchColumns.find(searchColumn => String(entry[searchColumn]).includes(this.searchQuery));
           }
           const lowercaseQuery = this.searchQuery.toLowerCase();
-          return this.searchColumns.find(searchColumn => entry[searchColumn].toLowerCase().includes(lowercaseQuery));
+          return this.searchColumns.find(searchColumn => String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery));
         });
         return indexedDataCopy;
       }
@@ -179,10 +184,13 @@ export default {
         } else {
           indexedDataCopy = [...this.indexedData];
         }
-        if (this.perPage >= indexedDataCopy.length) {
+        const indexedDataCopyLength = indexedDataCopy.length
+        if (this.perPage >= indexedDataCopyLength && indexedDataCopyLength > 0) {
           return [0];
+        } else if (indexedDataCopyLength === 0) {
+          return [];
         }
-        const amountOfPages = Math.ceil(indexedDataCopy.length / this.perPage);
+        const amountOfPages = Math.ceil(indexedDataCopyLength / this.perPage);
         return [...Array(amountOfPages).keys()];
       }
       return [];

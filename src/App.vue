@@ -5,7 +5,7 @@
       :data='tableData'
       :per-page='10'
       :has-search='true'
-      :searchColumns='["first_name", "last_name", "location"]'
+      :searchColumns='["first_name", "last_name", "location", "age"]'
       :searchCaseSensitive='true'
     ></tavuelo>
   </div>
