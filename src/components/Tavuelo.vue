@@ -31,6 +31,7 @@
           <td
             v-for='column in computedColumns'
             :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
+            :style='getComputedColumnStyle(column)'
           >
             <div
               v-if='!column.type || column.type === "text"'
@@ -40,8 +41,8 @@
               v-else-if='column.type === "bool"'
               class='cell'
             >
-              <span v-if='row[column.dataSource]'>&check;</span>
-              <span v-else>&cross;</span>
+              <span v-if='row[column.dataSource]' class='tavuelo-check-icon'>&check;</span>
+              <span v-else class='tavuelo-cross-icon'>&cross;</span>
             </div>
           </td>
         </tr>
@@ -143,8 +144,9 @@ export default {
     },
     filteredData() {
       if (this.customFiltering && typeof this.customFiltering === 'function') {
-        return this.customFiltering([...this.indexedData], this.searchQuery)
-      } else if (this.indexedData && this.indexedData.length) {
+        return this.customFiltering([...this.indexedData], this.searchQuery);
+      }
+      if (this.indexedData && this.indexedData.length) {
         let indexedDataCopy = [...this.indexedData];
         indexedDataCopy = indexedDataCopy.filter(entry => {
           if (this.searchCaseSensitive) {
@@ -184,10 +186,11 @@ export default {
         } else {
           indexedDataCopy = [...this.indexedData];
         }
-        const indexedDataCopyLength = indexedDataCopy.length
+        const indexedDataCopyLength = indexedDataCopy.length;
         if (this.perPage >= indexedDataCopyLength && indexedDataCopyLength > 0) {
           return [0];
-        } else if (indexedDataCopyLength === 0) {
+        }
+        if (indexedDataCopyLength === 0) {
           return [];
         }
         const amountOfPages = Math.ceil(indexedDataCopyLength / this.perPage);
@@ -202,6 +205,16 @@ export default {
   methods: {
     changePage(page) {
       this.activePage = page;
+    },
+    getComputedColumnStyle(column) {
+      const styles = {};
+      if (column.width) {
+        styles.width = column.width;
+      }
+      if (column.minWidth) {
+        styles['min-width'] = column.minWidth;
+      }
+      return styles;
     },
   },
   watch: {
@@ -276,7 +289,6 @@ export default {
         width: 140px
         color: #FFFFFF
         background: #000000
-        // height: 30px
         line-height: 11px
         font-size: 10px
         text-align: center

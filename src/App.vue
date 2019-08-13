@@ -3,7 +3,7 @@
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
-      :per-page='10'
+      :per-page='20'
       :has-search='true'
       :searchColumns='["first_name", "last_name", "location", "age"]'
       :searchCaseSensitive='true'
@@ -20,11 +20,13 @@ export default {
   data() {
     return {
       tableColumns: [
-        { title: 'First name', dataSource: 'first_name' },
-        { title: 'Last name', dataSource: 'last_name' },
-        { title: 'Age', dataSource: 'age' },
+        { title: 'First name', dataSource: 'first_name', minWidth: '250px' },
+        { title: 'Last name', dataSource: 'last_name', width: '150px' },
+        { title: 'Age', dataSource: 'age', width: '50px' },
         { title: 'Location', dataSource: 'location' },
-        { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active' },
+        {
+          title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '60px',
+        },
       ],
     };
   },
