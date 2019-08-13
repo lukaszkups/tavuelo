@@ -136,15 +136,11 @@ export default {
       if (this.indexedData && this.indexedData.length) {
         let indexedDataCopy = [...this.indexedData];
         indexedDataCopy = indexedDataCopy.filter(entry => {
-          /* eslint-disable-next-line no-unused-vars */
-          let found = false;
-          this.searchColumns.map(searchColumn => {
-            if (entry[searchColumn].includes(this.searchQuery)) {
-              console.log(entry[searchColumn], searchColumn);
-              found = true;
-            }
-          });
-          return found;
+          if (this.searchCaseSensitive) {
+            return this.searchColumns.find(searchColumn => entry[searchColumn].includes(this.searchQuery));
+          }
+          const lowercaseQuery = this.searchQuery.toLowerCase();
+          return this.searchColumns.find(searchColumn => entry[searchColumn].toLowerCase().includes(lowercaseQuery));
         });
         return indexedDataCopy;
       }
@@ -159,7 +155,7 @@ export default {
           indexedDataCopy = [...this.indexedData];
         }
         if (this.hasPagination) {
-          const startIndex = ((this.activePage + 1) * this.perPage) - 1;
+          const startIndex = this.activePage * this.perPage;
           return indexedDataCopy.slice(startIndex, startIndex + this.perPage);
         }
         return indexedDataCopy;
@@ -170,17 +166,17 @@ export default {
       return !Number.isNaN(this.perPage) && this.perPage > 0;
     },
     pageList() {
-      if (this.hasPagination && this.indexedData && this.indexedData.length) {
-        if (this.perPage >= this.indexedData.length) {
-          return [0];
-        }
+      if (this.hasPagination) {
         let indexedDataCopy = [];
         if (this.hasSearch && this.searchColumns && this.searchColumns.length && this.searchQuery && this.searchQuery.length) {
           indexedDataCopy = [...this.filteredData];
         } else {
           indexedDataCopy = [...this.indexedData];
         }
-        const amountOfPages = Math.floor(indexedDataCopy.length / this.perPage);
+        if (this.perPage >= indexedDataCopy.length) {
+          return [0];
+        }
+        const amountOfPages = Math.ceil(indexedDataCopy.length / this.perPage);
         return [...Array(amountOfPages).keys()];
       }
       return [];
@@ -192,6 +188,11 @@ export default {
   methods: {
     changePage(page) {
       this.activePage = page;
+    },
+  },
+  watch: {
+    filteredData() {
+      this.activePage = 0;
     },
   },
 };

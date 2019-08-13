@@ -3,9 +3,10 @@
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
-      :per-page='11'
+      :per-page='10'
       :has-search='true'
       :searchColumns='["first_name", "last_name", "location"]'
+      :searchCaseSensitive='true'
     ></tavuelo>
   </div>
 </template>
