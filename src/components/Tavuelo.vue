@@ -13,13 +13,16 @@
             v-for='column in computedColumns'
             :key='column.tavuelo_id'
           >
-            <div v-if='column.tooltip'>
-              <div class='tavuelo-tooltip tavuelo-tooltips'>
-                {{ column.title }}
-                <span>{{ column.tooltip }}</span>
+            <div class='cell'>
+              <div v-if='column.tooltip'>
+                <div class='tavuelo-tooltip tavuelo-tooltips'>
+                  {{ column.title }}
+                  <span>{{ column.tooltip }}</span>
+                </div>
               </div>
+              <div v-else>{{ column.title }}</div>
+              <div class='tavuelo-sorting'></div>
             </div>
-            <div v-else>{{ column.title }}</div>
           </th>
         </tr>
       </thead>
@@ -237,6 +240,9 @@ export default {
         th
           background: silver
           border: 1px solid grey
+          .cell
+            position: relative
+            width: 100%
     tbody
       tr
         td
@@ -313,4 +319,36 @@ export default {
       left: 50%
       margin-left: -76px
       z-index: 999
+
+  // sorting styles
+  .tavuelo-sorting
+    cursor: pointer
+    position: absolute
+    right: 2px
+    top: 3px
+    width: 10px
+    height: 100%
+
+    &:before
+      content: ' '
+      line-height: 0
+      border-left: 5px solid transparent
+      border-right: 5px solid transparent
+      border-bottom: 5px solid #000
+      width: 0
+      height: 0
+      position: absolute
+      top: 0
+      left: 0
+    &:after
+      content: ' '
+      line-height: 0
+      border-left: 5px solid transparent
+      border-right: 5px solid transparent
+      border-top: 5px solid #000
+      width: 0
+      height: 0
+      position: absolute
+      top: 8px
+      left: 0
 </style>
