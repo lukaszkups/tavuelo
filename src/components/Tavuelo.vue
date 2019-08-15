@@ -6,12 +6,17 @@
         placeholder='Search'
       />
     </div>
-    <table class='tavuelo'>
+    <table
+      :class='["tavuelo", {
+        "tavuelo--flex-table": this.useFlex,
+      }]'
+    >
       <thead>
         <tr>
           <th
             v-for='column in computedColumns'
             :key='column.tavuelo_id'
+            :style='getComputedColumnStyle(column)'
           >
             <div class='cell'>
               <div v-if='column.tooltip'>
@@ -93,8 +98,6 @@
   </div>
 </template>
 <script>
-/* eslint-disable max-len, arrow-body-style, arrow-parens, array-callback-return */
-
 export default {
   name: 'Tavuelo',
   data() {
@@ -130,6 +133,10 @@ export default {
     searchColumns: {
       type: Array,
       default: () => [],
+    },
+    useFlex: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -250,6 +257,23 @@ export default {
         &:hover
           td
             background: lavender
+
+    &.tavuelo--flex-table
+      tr
+        display: flex
+
+        th, td
+          flex: 1
+
+          &:not(:first-of-type)
+            border-left: none
+
+        th
+          border-bottom: none
+
+      tr:not(:last-of-type)
+        td
+          border-bottom: none
 
   .tavuelo__pagination
     display: block

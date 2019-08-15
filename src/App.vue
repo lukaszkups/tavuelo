@@ -7,6 +7,8 @@
       :has-search='true'
       :searchColumns='["first_name", "last_name", "location", "age"]'
       :searchCaseSensitive='true'
+      :useFlex='true'
+      :wrapContent='true'
     ></tavuelo>
   </div>
 </template>
@@ -24,9 +26,7 @@ export default {
         { title: 'Last name', dataSource: 'last_name', width: '150px' },
         { title: 'Age', dataSource: 'age', width: '60px' },
         { title: 'Location', dataSource: 'location' },
-        {
-          title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px',
-        },
+        { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
       ],
     };
   },
