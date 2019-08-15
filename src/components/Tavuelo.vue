@@ -397,4 +397,11 @@ export default {
       position: absolute
       top: 8px
       left: 0
+
+    &.sorting-asc
+      &:before
+        border-bottom-color: crimson
+    &.sorting-desc
+      &:after
+        border-top-color: crimson
 </style>
