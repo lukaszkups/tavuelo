@@ -9,6 +9,7 @@
     <table
       :class='["tavuelo", {
         "tavuelo--flex-table": this.useFlex,
+        "tavuelo--wrap-content": this.wrapContent,
       }]'
     >
       <thead>
@@ -138,6 +139,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    wrapContent: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     computedColumns() {
@@ -257,6 +262,23 @@ export default {
         &:hover
           td
             background: lavender
+
+    &.tavuelo--wrap-content
+      tr
+        height: 1.5em
+
+        td, th
+          overflow-x: hidden
+          position: relative
+
+          .cell
+            position: absolute
+            white-space: nowrap
+            text-overflow: ellipsis
+            height: 1.5em
+            right: 0
+            left: 0
+            overflow-x: hidden
 
     &.tavuelo--flex-table
       tr
