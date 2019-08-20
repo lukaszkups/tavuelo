@@ -14,7 +14,8 @@ module.exports = {
     'arrow-body-style': 'off',
     'arrow-parens': 'off',
     'array-callback-return': 'off',
-    'object-curly-newline': 'off'
+    'object-curly-newline': 'off',
+    'linebreak-style': 'off'
   },
   parserOptions: {
     parser: 'babel-eslint',
