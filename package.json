@@ -1,11 +1,13 @@
 {
   "name": "tavuelo",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Simple table component with pagination, filtering and sorting functionality",
   "private": false,
   "author": "lukaszkups",
-  "website": "https://lukaszkups.net",
-  "main": "dist/index.js",
+  "homepage": "https://lukaszkups.net",
+  "keywords": ["vue", "vue.js", "table", "datatable", "data", "data table"],
+  "repository": "github:lukaszkups/tavuelo",
+  "main": "dist/tavuelo.umd.min.js",
   "license": "MIT",
   "files": [
     "dist/*",
