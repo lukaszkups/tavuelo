@@ -1,7 +1,7 @@
 {
   "name": "tavuelo",
-  "version": "0.9.1",
-  "description": "Simple table component with pagination, filtering and sorting functionality",
+  "version": "0.9.6",
+  "description": "Simple table component with pagination, filtering and sorting functionality.",
   "private": false,
   "author": "lukaszkups",
   "homepage": "https://lukaszkups.net",

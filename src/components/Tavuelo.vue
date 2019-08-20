@@ -208,9 +208,6 @@ export default {
         } else {
           indexedDataCopy = [...this.indexedData];
         }
-        // if (this.defaultSortDataName) {
-        //   indexedDataCopy = this.sortData(this.defaultSortDataName, this.defaultSortDirection);
-        // }
         if (this.hasPagination) {
           const startIndex = this.activePage * this.perPage;
           return indexedDataCopy.slice(startIndex, startIndex + this.perPage);
@@ -251,7 +248,7 @@ export default {
       this.activePage = page;
     },
     getComputedColumnStyle(column) {
-      let styles = {};
+      const styles = {};
       if (column.width) {
         styles.width = column.width;
       }
@@ -299,7 +296,7 @@ export default {
   },
 };
 </script>
-<style lang='sass'>
+<style lang='sass' scoped>
 .tavuelo__wrapper
   display: block
 
