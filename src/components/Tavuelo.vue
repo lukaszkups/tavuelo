@@ -27,7 +27,14 @@
                 </div>
               </div>
               <div v-else>{{ column.title }}</div>
-              <div class='tavuelo-sorting'></div>
+              <div
+                :class='["tavuelo-sorting", {
+                  "tavuelo-sorting__active": column.dataSource === currentSortDataName,
+                  "sorting-asc": column.dataSource === currentSortDataName && currentSortDirection === "asc",
+                  "sorting-desc": column.dataSource === currentSortDataName && currentSortDirection === "desc",
+                }]'
+                @click='toggleSorting(column)'
+              ></div>
             </div>
           </th>
         </tr>
@@ -104,7 +111,10 @@ export default {
   data() {
     return {
       activePage: 0,
+      dataCopy: [],
       searchQuery: '',
+      currentSortDataName: '',
+      currentSortDirection: '',
     };
   },
   props: {
@@ -143,6 +153,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    defaultSortDataName: {
+      type: String,
+    },
+    defaultSortDirection: {
+      type: String,
+      default: 'asc',
+    },
+    customSortRules: {
+      type: Object,
+    },
   },
   computed: {
     computedColumns() {
@@ -152,8 +172,8 @@ export default {
       return [];
     },
     indexedData() {
-      if (this.data && this.data.length) {
-        return this.data.map((row, index) => ({ ...row, tavuelo_id: index }));
+      if (this.dataCopy && this.dataCopy.length) {
+        return this.dataCopy.map((row, index) => ({ ...row, tavuelo_id: index }));
       }
       return [];
     },
@@ -182,6 +202,9 @@ export default {
         } else {
           indexedDataCopy = [...this.indexedData];
         }
+        // if (this.defaultSortDataName) {
+        //   indexedDataCopy = this.sortData(this.defaultSortDataName, this.defaultSortDirection);
+        // }
         if (this.hasPagination) {
           const startIndex = this.activePage * this.perPage;
           return indexedDataCopy.slice(startIndex, startIndex + this.perPage);
@@ -231,11 +254,42 @@ export default {
       }
       return styles;
     },
+    sortData(dataSourceName = this.currentSortDataName, direction = this.currentSortDirection) {
+      let dataCopy = [...this.dataCopy];
+      if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
+        dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
+      } else {
+        dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+        if (direction === 'desc') {
+          dataCopy.reverse();
+        }
+      }
+      this.dataCopy = dataCopy;
+    },
+    toggleSorting(column) {
+      if (column.dataSource === this.currentSortDataName) {
+        this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc';
+        this.sortData(this.currentSortDataName, this.currentSortDirection);
+      } else {
+        this.currentSortDataName = column.dataSource;
+        this.currentSortDirection = 'asc';
+        this.sortData();
+      }
+    },
   },
   watch: {
     filteredData() {
       this.activePage = 0;
     },
+    data(newVal) {
+      this.dataCopy = [...newVal];
+    },
+  },
+  created() {
+    this.dataCopy = [...this.data];
+    this.currentSortDataName = this.defaultSortDataName;
+    this.currentSortDirection = this.defaultSortDirection;
+    this.sortData();
   },
 };
 </script>
@@ -398,10 +452,11 @@ export default {
       top: 8px
       left: 0
 
-    &.sorting-asc
-      &:before
-        border-bottom-color: crimson
-    &.sorting-desc
-      &:after
-        border-top-color: crimson
+    &__active
+      &.sorting-asc
+        &:before
+          border-bottom-color: crimson
+      &.sorting-desc
+        &:after
+          border-top-color: crimson
 </style>

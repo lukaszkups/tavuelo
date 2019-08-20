@@ -9,6 +9,7 @@
       :searchCaseSensitive='true'
       :useFlex='true'
       :wrapContent='true'
+      defaultSortDataName='first_name'
     ></tavuelo>
   </div>
 </template>
