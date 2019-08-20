@@ -3,13 +3,14 @@
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
-      :per-page='20'
-      :has-search='true'
+      :perPage='20'
+      :hasSearch='true'
       :searchColumns='["first_name", "last_name", "location", "age"]'
       :searchCaseSensitive='true'
       :useFlex='true'
       :wrapContent='true'
       defaultSortDataName='first_name'
+      :clickHeaderToSort='true'
     ></tavuelo>
   </div>
 </template>

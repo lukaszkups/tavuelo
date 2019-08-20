@@ -18,6 +18,8 @@
             v-for='column in computedColumns'
             :key='column.tavuelo_id'
             :style='getComputedColumnStyle(column)'
+            :class='{"column--has-sorting": clickHeaderToSort === true && searchColumns.includes(column.dataSource)}'
+            @click='clickHeaderToSort === true && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
           >
             <div class='cell'>
               <div v-if='column.tooltip'>
@@ -163,6 +165,10 @@ export default {
     customSortRules: {
       type: Object,
     },
+    clickHeaderToSort: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     computedColumns() {
@@ -245,7 +251,7 @@ export default {
       this.activePage = page;
     },
     getComputedColumnStyle(column) {
-      const styles = {};
+      let styles = {};
       if (column.width) {
         styles.width = column.width;
       }
@@ -306,6 +312,11 @@ export default {
         th
           background: silver
           border: 1px solid grey
+
+          &.column--has-sorting
+            &:hover
+              cursor: pointer
+
           .cell
             position: relative
             width: 100%
