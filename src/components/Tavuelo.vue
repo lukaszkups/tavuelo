@@ -149,7 +149,7 @@ export default {
     },
     useFlex: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     wrapContent: {
       type: Boolean,

@@ -7,7 +7,6 @@
       :hasSearch='true'
       :searchColumns='["first_name", "last_name", "location", "age"]'
       :searchCaseSensitive='true'
-      :useFlex='true'
       :wrapContent='true'
       defaultSortDataName='first_name'
       :clickHeaderToSort='true'
