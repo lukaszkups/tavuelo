@@ -97,8 +97,8 @@ Extensed example:
 
 # License
 
-MIT.
+[MIT](https://github.com/lukaszkups/tavuelo/blob/master/LICENSE)
 
 # Author
 
-![@lukaszkups](https://lukaszkups.net)
+[@lukaszkups](https://lukaszkups.net)
