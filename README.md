@@ -95,6 +95,18 @@ Extensed example:
 |customSortRules|`n/a`|`{first_name: (dataCopy, sortDirection) => {...}}`|An object that keys corresponds to column data sources and values are functions that handle custom sort logic while taking 2 parameters: `dataCopy` which is exact copy of table's data and `sortDirection` (which takes `asc` or `desc` as its value)|
 |clickHeaderToSort|`false`|`true`|A boolean value that binds column sorting with whole table header cell (by default, tavuelo handle sorting by clicking sort arrows only)|
 
+# Roadmap
+
+Roadmap to version `1.0.0.` is available at [issues tab](https://github.com/lukaszkups/tavuelo/issues).
+
+Feel free to add own `enhacement` issues there.
+
+# Troubleshoot & support
+
+You can submit bugs similarly to feature request at github's [issues tab](https://github.com/lukaszkups/tavuelo/issues) with `bug` label.
+
+For more alike real-time support, feel free to [tweet to me](https://twitter.com/lukaszkups).
+
 # License
 
 [MIT](https://github.com/lukaszkups/tavuelo/blob/master/LICENSE)
