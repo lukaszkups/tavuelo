@@ -10,6 +10,7 @@
       :wrapContent='true'
       defaultSortDataName='first_name'
       :clickHeaderToSort='true'
+      :rowClick='rowClickCallback'
     ></tavuelo>
   </div>
 </template>
@@ -25,7 +26,7 @@ export default {
       tableColumns: [
         { title: 'First name', dataSource: 'first_name', minWidth: '250px' },
         { title: 'Last name', dataSource: 'last_name', width: '150px' },
-        { title: 'Age', dataSource: 'age', width: '60px' },
+        { title: 'Age', dataSource: 'age', width: '60px', onClick: this.cellClickCallback },
         { title: 'Location', dataSource: 'location' },
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
       ],
@@ -38,6 +39,15 @@ export default {
   },
   components: {
     Tavuelo,
+  },
+  methods: {
+    rowClickCallback(row) {
+      console.log('ROW CLICK', row);
+    },
+    cellClickCallback(e, row) {
+      e.stopPropagation();
+      console.log('CELL CLICK', row);
+    },
   },
 };
 </script>
