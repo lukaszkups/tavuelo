@@ -45,11 +45,13 @@
         <tr
           v-for='row in computedData'
           :key='row.tavuelo_id'
+          @click='rowClick && typeof rowClick === "function" ? rowClick(row) : false'
         >
           <td
             v-for='column in computedColumns'
             :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
             :style='getComputedColumnStyle(column)'
+            @click='onTableCellClick($event, column, row)'
           >
             <div
               v-if='!column.type || column.type === "text"'
@@ -169,6 +171,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    rowClick: {
+      type: Function,
+    },
   },
   computed: {
     computedColumns() {
@@ -278,6 +283,13 @@ export default {
         this.currentSortDirection = 'asc';
         this.sortData();
       }
+    },
+    onTableCellClick(event, column, row) {
+      if (column && column.onClick && typeof column.onClick === 'function') {
+        event.stopPropagation();
+        column.onClick(row, column, event);
+      }
+      return false;
     },
   },
   watch: {
