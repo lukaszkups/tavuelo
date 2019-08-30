@@ -42,9 +42,11 @@ export default {
   },
   methods: {
     rowClickCallback(row) {
+      /* eslint-ignore-next-line no-console */
       console.log('ROW CLICK', row);
     },
     cellClickCallback(e, row, column) {
+      /* eslint-ignore-next-line no-console */
       console.log('CELL CLICK', e, row, column);
     },
   },
