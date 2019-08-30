@@ -109,6 +109,7 @@ To create table properly you have to pass an array of columns definitions to `:c
 ```
 
 |Property name|Available values|Example value|Description|
+| --- | --- | --- | --- |
 |title|Any string|`First name`|Title of the column that will be displayed in table header|
 |tooltip|Any string|`First name of the user`|If defined, when user hover on table header cell, it will display additional content as tooltip bubble. Handy when table gets really wide and want to show shorter table headings with extensive descriptions inside tooltips.|
 |dataSource|Any string|`first_name`|Name of the property that should be displayed in the column.|
