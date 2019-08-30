@@ -51,7 +51,7 @@
             v-for='column in computedColumns'
             :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
             :style='getComputedColumnStyle(column)'
-            @click='(e) => onTableCellClick(e, column)'
+            @click='onTableCellClick($event, column, row)'
           >
             <div
               v-if='!column.type || column.type === "text"'

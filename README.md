@@ -94,6 +94,25 @@ Extensed example:
 |defaultSortDirection|`'asc'`|`'desc'`|A string `asc` or `desc` that set the default sort direction|
 |customSortRules|`n/a`|`{first_name: (dataCopy, sortDirection) => {...}}`|An object that keys corresponds to column data sources and values are functions that handle custom sort logic while taking 2 parameters: `dataCopy` which is exact copy of table's data and `sortDirection` (which takes `asc` or `desc` as its value)|
 |clickHeaderToSort|`false`|`true`|A boolean value that binds column sorting with whole table header cell (by default, tavuelo handle sorting by clicking sort arrows only)|
+|rowClick|`null`|`rowclickCallback(row) { ... }`|A function that is executed when user click on any table body row. This function takes `row` parameter by default so you can learn on which row user clicked|
+
+## Table column definition
+
+To create table properly you have to pass an array of columns definitions to `:columns` component property, e.g.:
+
+```
+[
+  {title: 'First name', dataSource: 'first_name'},
+  {title: 'Last name', dataSource: 'last_name'},
+  {title: 'Active', dataSource: 'is_active', type: 'bool'} // type 'text' is default
+]
+```
+
+|Property name|Available values|Example value|Description|
+|title|Any string|`First name`|Title of the column that will be displayed in table header|
+|tooltip|Any string|`First name of the user`|If defined, when user hover on table header cell, it will display additional content as tooltip bubble. Handy when table gets really wide and want to show shorter table headings with extensive descriptions inside tooltips.|
+|dataSource|Any string|`first_name`|Name of the property that should be displayed in the column.|
+|type|`text`(default), `bool`|`bool`|Defines type of the column contents. By default, `text` column data type is set. When `bool`, it displays tick (true) or cross(false) icon instead of plain value.|
 
 # Roadmap
 

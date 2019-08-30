@@ -44,9 +44,8 @@ export default {
     rowClickCallback(row) {
       console.log('ROW CLICK', row);
     },
-    cellClickCallback(e, row) {
-      e.stopPropagation();
-      console.log('CELL CLICK', row);
+    cellClickCallback(e, row, column) {
+      console.log('CELL CLICK', e, row, column);
     },
   },
 };
