@@ -47,7 +47,7 @@ Minimal example:
 </template>
 ```
 
-Extensed example:
+Extended example:
 
 ```
 <template>
