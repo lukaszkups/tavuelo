@@ -120,7 +120,7 @@ To create table properly you have to pass an array of columns definitions to `:c
 
 Roadmap to version `1.0.0.` is available at [issues tab](https://github.com/lukaszkups/tavuelo/issues).
 
-Feel free to add own `enhacement` issues there.
+Feel free to add own `feature request` issues there.
 
 # Troubleshoot & support
 
