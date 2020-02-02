@@ -47,7 +47,7 @@ Minimal example:
 </template>
 ```
 
-Extensed example:
+Extended example:
 
 ```
 <template>
@@ -71,6 +71,7 @@ Extensed example:
   :wrapContent='true'
   defaultSortDataName='first_name'
   :clickHeaderToSort='true'
+  :downloadDataButton='true'
 ></tavuelo>
 </template>
 ```
@@ -95,6 +96,8 @@ Extensed example:
 |customSortRules|`n/a`|`{first_name: (dataCopy, sortDirection) => {...}}`|An object that keys corresponds to column data sources and values are functions that handle custom sort logic while taking 2 parameters: `dataCopy` which is exact copy of table's data and `sortDirection` (which takes `asc` or `desc` as its value)|
 |clickHeaderToSort|`false`|`true`|A boolean value that binds column sorting with whole table header cell (by default, tavuelo handle sorting by clicking sort arrows only)|
 |rowClick|`null`|`rowclickCallback(row) { ... }`|A function that is executed when user clicks on any table body row. This function takes `row` parameter by default so you can learn on which row user clicked|
+|downloadDataButton|`false`|`true`|A boolean value that toggle visibility of button that triggers data download action|
+|downloadDataFileType|`json`|`csv`|A string value that determines if data is available to download as json or csv file|
 
 ## Table column definition
 

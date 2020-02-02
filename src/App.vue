@@ -11,6 +11,8 @@
       defaultSortDataName='first_name'
       :clickHeaderToSort='true'
       :rowClick='rowClickCallback'
+      :downloadDataButton='true'
+      downloadDataFileType='csv'
     ></tavuelo>
   </div>
 </template>
