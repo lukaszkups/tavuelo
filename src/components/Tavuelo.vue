@@ -1,10 +1,18 @@
 <template>
   <div class='tavuelo__wrapper'>
-    <div v-if='hasSearch' class='tavuelo__search'>
-      <input
-        v-model='searchQuery'
-        placeholder='Search'
-      />
+    <div class='tavuelo__wrapper--top'>
+      <div v-if='downloadDataButton' class='tavuelo__download-data-wrapper'>
+        <button
+          class='tavuelo__button--download-data'
+          @click='downloadDataButtonClick'
+        >Download</button>
+      </div>
+      <div v-if='hasSearch' class='tavuelo__search'>
+        <input
+          v-model='searchQuery'
+          placeholder='Search'
+        />
+      </div>
     </div>
     <table
       :class='["tavuelo", {
@@ -174,6 +182,14 @@ export default {
     rowClick: {
       type: Function,
     },
+    downloadDataButton: {
+      type: Boolean,
+      default: false,
+    },
+    downloadDataFileType: {
+      type: String,
+      default: 'json', // available values: 'json', 'csv'
+    },
   },
   computed: {
     computedColumns() {
@@ -291,6 +307,36 @@ export default {
       }
       return false;
     },
+    convertDataToCsv() {
+      // first, add column names
+      let txt = '';
+      const colAmount = this.columns.length;
+      this.columns.map((column, index) => {
+        txt += `${column.dataSource}${index < colAmount ? ',' : '\r\n'}`;
+      });
+      // then, add data
+      this.computedData.map(row => {
+        this.columns.map((column, index) => {
+          txt += `${row[column.dataSource]}${index < colAmount ? ',' : '\r\n'}`;
+        });
+      });
+      return txt;
+    },
+    // source: https://stackoverflow.com/a/33542499/1004946
+    downloadDataButtonClick() {
+      const data = this.downloadDataFileType === 'json' ? JSON.stringify(this.computedData) : this.convertDataToCsv();
+      const blob = new Blob([data], { type: this.downloadDataFileType === 'json' ? 'application/json' : 'text/csv' });
+      if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, `data.${this.downloadDataFileType}`);
+      } else {
+        const elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = `data.${this.downloadDataFileType}`;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+      }
+    },
   },
   watch: {
     filteredData() {
@@ -371,6 +417,23 @@ export default {
         td
           border-bottom: none
 
+    &__download-data-wrapper
+      display: inline-block
+      float: left
+
+    &__button
+      &--download-data
+        padding: 5px 10px
+        border-radius: 5px
+        text-align: center
+        color: #FFFFFF
+        background: #4ab2d6
+        border: 1px solid #4ab2d6
+
+        &:hover
+          cursor: pointer
+          background: darken(#4ab2d6, 10)
+
   .tavuelo__pagination
     display: block
     list-style-type: none
@@ -398,6 +461,8 @@ export default {
           cursor: not-allowed
 
   .tavuelo__search
+    display: inline-block
+    float: right
     text-align: right
 
     input
