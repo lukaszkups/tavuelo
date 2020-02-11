@@ -1,5 +1,5 @@
 # tavuelo
-A simple Vue.js table component
+Easy to use but with advanced features a Vue.js table component
 
 # Installation
 
@@ -8,6 +8,24 @@ First, install npm package:
 ```
 npm i --save tavuelo
 ```
+
+# Demo
+
+Clone this repository to your local hard drive.
+
+Install all dependencies:
+
+```
+npm i
+```
+
+Run the demo:
+
+```
+npm run serve
+```
+
+Enter `http://localhost:8080` in your browser and check the example of Tavuelo functionalities. Demo code can be found at `/src/App.vue` file.
 
 # Usage
 
@@ -58,11 +76,22 @@ Extended example:
     { title: "Age", dataSource: "age", width: "60px" },
     { title: "Location", dataSource: "location" },
     { title: "Active", dataSource: "active", type: "bool", tooltip: "Information if user is active", width: "80px" },
+    { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName', computedValue: row => `${row.first_name} ${row.last_name}` },
+    { title: 'Login', dataSource: 'login', type: 'slot', slotName: 'login', computedValue: row => `${row.first_name}${row.age}${row.last_name}` }
   ]"
   :data='[
     {"first_name":"Anthony","last_name":"Levine","age":52,"location":"Lamorteau","active":0,"joined":"1993-11-25T16:42:12-08:00","email":"Sed.nec@eleifendvitae.edu","phone":346593579},
     {"first_name":"Warren","last_name":"Mcintyre","age":61,"location":"Zwevegem","active":1,"joined":"2013-02-07T05:05:17-08:00","email":"ante.lectus.convallis@pharetrased.ca","phone":349017516}
   ]'
+  :customSortRules='{
+    fullName: (dataCopy, direction) => {
+      dataCopy.sort((a, b) => String(`${a.first_name} ${a.last_name}`).localeCompare(String(`${b.first_name} ${b.last_name}`)));
+      if (direction === 'desc') {
+        dataCopy.reverse();
+      }
+      return dataCopy;
+    },
+  }'
   :perPage='20'
   :hasSearch='true'
   :searchColumns='["first_name", "last_name", "location", "age"]'
@@ -72,7 +101,14 @@ Extended example:
   defaultSortDataName='first_name'
   :clickHeaderToSort='true'
   :downloadDataButton='true'
-></tavuelo>
+>
+  <template slot='fullName' slot-scope='{entry}'>
+    {{ entry.first_name }} {{ entry.last_name }}
+  </template>
+  <template slot='login' slot-scope='{entry}'>
+    {{entry.first_name}}{{entry.age}}{{entry.last_name}}
+  </template>
+</tavuelo>
 </template>
 ```
 
@@ -98,6 +134,8 @@ Extended example:
 |rowClick|`null`|`rowclickCallback(row) { ... }`|A function that is executed when user clicks on any table body row. This function takes `row` parameter by default so you can learn on which row user clicked|
 |downloadDataButton|`false`|`true`|A boolean value that toggle visibility of button that triggers data download action|
 |downloadDataFileType|`json`|`csv`|A string value that determines if data is available to download as json or csv file|
+|noDataLabel|`No data`|`There is no results`|A string message that shows when there is no results/data in the table|
+|useNoDataSlot|`false`|`true`|A boolean value that toggle usage of slot block that will be visible when there won't be any results/data in the table. If it is set to `true` then tavuelo will use the slot block with `noDataSlot` name instead of displaying text that has been set in `noDataLabel` property|
 
 ## Table column definition
 
@@ -107,7 +145,8 @@ To create table properly you have to pass an array of columns definitions to `:c
 [
   {title: 'First name', dataSource: 'first_name'},
   {title: 'Last name', dataSource: 'last_name'},
-  {title: 'Active', dataSource: 'is_active', type: 'bool'} // type 'text' is default
+  {title: 'Active', dataSource: 'is_active', type: 'bool'}, // type 'text' is default
+  { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName', computedValue: row => `${row.first_name} ${row.last_name}` }
 ]
 ```
 
@@ -116,8 +155,10 @@ To create table properly you have to pass an array of columns definitions to `:c
 |title|Any string|`First name`|Title of the column that will be displayed in table header|
 |tooltip|Any string|`First name of the user`|If defined, when user hover on table header cell, it will display additional content as tooltip bubble. Handy when table gets really wide and want to show shorter table headings with extensive descriptions inside tooltips.|
 |dataSource|Any string|`first_name`|Name of the property that should be displayed in the column.|
-|type|`text`(default), `bool`|`bool`|Defines type of the column contents. By default, `text` column data type is set. When `bool`, it displays tick (true) or cross(false) icon instead of plain value.|
+|type|`text`(default), `bool`, `slot`|`bool`|Defines type of the column contents. By default, `text` column data type is set. When `bool`, it displays tick (true) or cross(false) icon instead of plain value. When `slot`, the `slotName` prop is required that will tell tavuelo what slot block should be used to display the cell contents|
 |onClick|Any function|`cellClickCallback(row, column, event) { ... }`|A function that is executed when user clicks on given table column cell. This function takes `row`, `column` and `event` parameters by default so you can use them in your callback.|
+|slotName|Any string|`fullName`|Name of the slot block that will be used to display contents of the cell. Slot block also needs to have defined `slot-scope='{entry}'` property. The `entry` value contains object of current table row.|
+|computedValue|Any function|`getFullName(row)`|A function that returns computed value of the cell - handy when using slot-based columns and wants to handle filtering/sorting on this column (as the result of this function will be used for filter/sorting).
 
 # Roadmap
 
