@@ -312,6 +312,7 @@ export default {
       if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
         dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
       } else {
+        // .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
         dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
         if (direction === 'desc') {
           dataCopy.reverse();

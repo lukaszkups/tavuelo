@@ -5,7 +5,7 @@
       :data='tableData'
       :perPage='20'
       :hasSearch='true'
-      :searchColumns='["first_name", "last_name", "location", "age"]'
+      :searchColumns='["first_name", "last_name", "location", "age", "fullName"]'
       :searchCaseSensitive='true'
       :wrapContent='true'
       defaultSortDataName='first_name'
@@ -13,6 +13,7 @@
       :rowClick='rowClickCallback'
       :downloadDataButton='true'
       downloadDataFileType='csv'
+      :customSortRules='slotSortRules'
     >
       <template slot='fullName' slot-scope='{entry}'>
         {{ entry.first_name }} {{ entry.last_name }}
@@ -35,8 +36,18 @@ export default {
         { title: 'Age', dataSource: 'age', width: '60px', onClick: this.cellClickCallback },
         { title: 'Location', dataSource: 'location' },
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
-        { title: 'Full name', type: 'slot', slotName: 'fullName' },
+        { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName' },
       ],
+      slotSortRules: {
+        fullName: (dataCopy, direction) => {
+          dataCopy.sort((a, b) => String(`${a.first_name} ${a.last_name}`).localeCompare(String(`${b.first_name} ${b.last_name}`)));
+          // .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
+          if (direction === 'desc') {
+            dataCopy.reverse();
+          }
+          return dataCopy;
+        },
+      },
     };
   },
   computed: {
