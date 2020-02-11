@@ -5,7 +5,7 @@
       :data='tableData'
       :perPage='20'
       :hasSearch='true'
-      :searchColumns='["first_name", "last_name", "location", "age", "fullName"]'
+      :searchColumns='["first_name", "last_name", "location", "age", "fullName", "login"]'
       :searchCaseSensitive='true'
       :wrapContent='true'
       defaultSortDataName='first_name'
@@ -20,6 +20,9 @@
       </template>
       <template slot='email' slot-scope='{entry}'>
         <a :href='`mailto:${entry.email}`'>{{ entry.email }}</a>
+      </template>
+      <template slot='login' slot-scope='{entry}'>
+        {{entry.first_name}}{{entry.age}}{{entry.last_name}}
       </template>
     </tavuelo>
   </div>
@@ -41,6 +44,7 @@ export default {
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
         { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName', computedValue: row => `${row.first_name} ${row.last_name}` },
         { title: 'E-mail', dataSource: 'email', type: 'slot', slotName: 'email' },
+        { title: 'Login', dataSource: 'login', type: 'slot', slotName: 'login', computedValue: row => `${row.first_name}${row.age}${row.last_name}` },
       ],
       customSortRules: {
         fullName: (dataCopy, direction) => {

@@ -268,27 +268,14 @@ export default {
         // if case sensitive, then search through data as it is
         if (this.searchCaseSensitive) {
           indexedDataCopy = indexedDataCopy.filter(entry => {
-            return this.searchColumns.find(searchColumn => {
-              // check if column does exists in dataset or is computed one
-              if (Object.prototype.hasOwnProperty.call(entry, searchColumn)) {
-                return String(entry[searchColumn]).includes(this.searchQuery);
-              }
-              // column value is computed
-              return String(this.computedColumns[searchColumn].computedValue(entry)).includes(this.searchQuery);
-            });
+            return this.searchColumns.find(searchColumn => String(entry[searchColumn]).includes(this.searchQuery));
           });
+          return indexedDataCopy;
         }
         // if case insensitive, then lowercase everything
         const lowercaseQuery = this.searchQuery.toLowerCase();
         indexedDataCopy = indexedDataCopy.filter(entry => {
-          return this.searchColumns.find(searchColumn => {
-            // check if column does exists in dataset or is computed one
-            if (Object.prototype.hasOwnProperty.call(entry, searchColumn)) {
-              return String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery);
-            }
-            // column value is computed
-            return String(this.computedColumns[searchColumn].computedValue(entry)).toLowerCase().includes(lowercaseQuery);
-          });
+          return this.searchColumns.find(searchColumn => String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery));
         });
         return indexedDataCopy;
       }
@@ -356,8 +343,20 @@ export default {
       if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
         dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
       } else {
-        // .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
-        dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+        // check if column value needs computing
+        if (dataCopy[0] && !Object.prototype.hasOwnProperty.call(dataCopy[0], dataSourceName) && this.indexedData[0] && Object.prototype.hasOwnProperty.call(this.indexedData[0], dataSourceName)) {
+          const indexedDataCopy = [...this.indexedData];
+          indexedDataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+          // remove tavuelo_id prop
+          dataCopy = indexedDataCopy.map(obj => {
+            const objCopy = { ...obj };
+            delete objCopy.tavuelo_id;
+            return objCopy;
+          });
+        } else {
+          dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+        }
+        // using .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
         if (direction === 'desc') {
           dataCopy.reverse();
         }
