@@ -227,8 +227,34 @@ export default {
       }
       return [];
     },
+    computedDataColumns() {
+      const columns = [];
+      this.computedColumns.map(col => {
+        // check if there are any columns that contains computed value prop
+        if (Object.prototype.hasOwnProperty.call(col, 'computedValue')) {
+          columns.push({
+            name: col.dataSource,
+            computedValue: col.computedValue,
+          });
+        }
+      });
+      return columns;
+    },
+    // helper Boolean value
+    hasComputedDataColumns() {
+      return this.computedDataColumns && this.computedDataColumns.length;
+    },
     indexedData() {
       if (this.dataCopy && this.dataCopy.length) {
+        if (this.hasComputedDataColumns) {
+          return this.dataCopy.map((row, index) => {
+            const obj = { ...row, tavuelo_id: index };
+            this.computedDataColumns.map(col => {
+              obj[col.name] = col.computedValue(row);
+            });
+            return obj;
+          });
+        }
         return this.dataCopy.map((row, index) => ({ ...row, tavuelo_id: index }));
       }
       return [];
@@ -239,12 +265,30 @@ export default {
       }
       if (this.indexedData && this.indexedData.length) {
         let indexedDataCopy = [...this.indexedData];
+        // if case sensitive, then search through data as it is
+        if (this.searchCaseSensitive) {
+          indexedDataCopy = indexedDataCopy.filter(entry => {
+            return this.searchColumns.find(searchColumn => {
+              // check if column does exists in dataset or is computed one
+              if (Object.prototype.hasOwnProperty.call(entry, searchColumn)) {
+                return String(entry[searchColumn]).includes(this.searchQuery);
+              }
+              // column value is computed
+              return String(this.computedColumns[searchColumn].computedValue(entry)).includes(this.searchQuery);
+            });
+          });
+        }
+        // if case insensitive, then lowercase everything
+        const lowercaseQuery = this.searchQuery.toLowerCase();
         indexedDataCopy = indexedDataCopy.filter(entry => {
-          if (this.searchCaseSensitive) {
-            return this.searchColumns.find(searchColumn => String(entry[searchColumn]).includes(this.searchQuery));
-          }
-          const lowercaseQuery = this.searchQuery.toLowerCase();
-          return this.searchColumns.find(searchColumn => String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery));
+          return this.searchColumns.find(searchColumn => {
+            // check if column does exists in dataset or is computed one
+            if (Object.prototype.hasOwnProperty.call(entry, searchColumn)) {
+              return String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery);
+            }
+            // column value is computed
+            return String(this.computedColumns[searchColumn].computedValue(entry)).toLowerCase().includes(lowercaseQuery);
+          });
         });
         return indexedDataCopy;
       }

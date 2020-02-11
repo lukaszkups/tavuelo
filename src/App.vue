@@ -18,6 +18,9 @@
       <template slot='fullName' slot-scope='{entry}'>
         {{ entry.first_name }} {{ entry.last_name }}
       </template>
+      <template slot='email' slot-scope='{entry}'>
+        <a :href='`mailto:${entry.email}`'>{{ entry.email }}</a>
+      </template>
     </tavuelo>
   </div>
 </template>
@@ -36,7 +39,8 @@ export default {
         { title: 'Age', dataSource: 'age', width: '60px', onClick: this.cellClickCallback },
         { title: 'Location', dataSource: 'location' },
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
-        { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName' },
+        { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName', computedValue: row => `${row.first_name} ${row.last_name}` },
+        { title: 'E-mail', dataSource: 'email', type: 'slot', slotName: 'email' },
       ],
       customSortRules: {
         fullName: (dataCopy, direction) => {
