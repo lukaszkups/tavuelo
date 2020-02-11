@@ -38,12 +38,13 @@
               </div>
               <div v-else>{{ column.title }}</div>
               <div
+                v-if='searchColumns.includes(column.dataSource)'
                 :class='["tavuelo-sorting", {
                   "tavuelo-sorting__active": column.dataSource === currentSortDataName,
                   "sorting-asc": column.dataSource === currentSortDataName && currentSortDirection === "asc",
                   "sorting-desc": column.dataSource === currentSortDataName && currentSortDirection === "desc",
                 }]'
-                @click='toggleSorting(column)'
+                @click='clickHeaderToSort === false && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
               ></div>
             </div>
           </th>
