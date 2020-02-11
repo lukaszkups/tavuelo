@@ -13,7 +13,11 @@
       :rowClick='rowClickCallback'
       :downloadDataButton='true'
       downloadDataFileType='csv'
-    ></tavuelo>
+    >
+      <template slot='fullName' slot-scope='{entry}'>
+        {{ entry.first_name }} {{ entry.last_name }}
+      </template>
+    </tavuelo>
   </div>
 </template>
 
@@ -31,6 +35,7 @@ export default {
         { title: 'Age', dataSource: 'age', width: '60px', onClick: this.cellClickCallback },
         { title: 'Location', dataSource: 'location' },
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
+        { title: 'Full name', type: 'slot', slotName: 'fullName' },
       ],
     };
   },

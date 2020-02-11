@@ -73,13 +73,27 @@
               <span v-if='row[column.dataSource]' class='tavuelo-check-icon'>&check;</span>
               <span v-else class='tavuelo-cross-icon'>&cross;</span>
             </div>
+            <div
+              v-else-if='column.type === "slot"'
+              class='cell'
+            >
+              <slot
+                :name='column.slotName'
+                :entry='row'
+              ></slot>
+            </div>
           </td>
         </tr>
         <tr
           v-if="!computedData || !computedData.length"
           class='tavuelo-no-data-row'
         >
-          <td>{{ noDataLabel }}</td>
+          <td v-if='useNoDataSlot'>
+            <slot
+              name='noDataSlot'
+            ></slot>
+          </td>
+          <td v-else>{{ noDataLabel }}</td>
         </tr>
       </tbody>
     </table>
@@ -200,6 +214,10 @@ export default {
     noDataLabel: {
       type: String,
       default: 'No data',
+    },
+    useNoDataSlot: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
