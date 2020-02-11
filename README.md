@@ -168,6 +168,10 @@ Roadmap to version `1.0.0.` is available at [issues tab](https://github.com/luka
 
 Feel free to add own `feature request` issues there.
 
+# Changelog
+
+You can find the release notes/changelog at [lukaszkups website](https://lukaszkups.net/notes/?category=tavuelo)
+
 # Troubleshoot & support
 
 You can submit bugs similarly to feature request at github's [issues tab](https://github.com/lukaszkups/tavuelo/issues) with `bug` label.
