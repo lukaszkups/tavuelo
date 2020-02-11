@@ -75,6 +75,12 @@
             </div>
           </td>
         </tr>
+        <tr
+          v-if="!computedData || !computedData.length"
+          class='tavuelo-no-data-row'
+        >
+          <td>{{ noDataLabel }}</td>
+        </tr>
       </tbody>
     </table>
     <ul
@@ -190,6 +196,10 @@ export default {
     downloadDataFileType: {
       type: String,
       default: 'json', // available values: 'json', 'csv'
+    },
+    noDataLabel: {
+      type: String,
+      default: 'No data',
     },
   },
   computed: {
@@ -417,6 +427,12 @@ export default {
       tr:not(:last-of-type)
         td
           border-bottom: none
+      tr.tavuelo-no-data-row
+        td
+          text-align: center
+        &:hover
+          td
+            background-color: inherit
 
     &__download-data-wrapper
       display: inline-block
