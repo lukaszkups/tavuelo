@@ -13,7 +13,7 @@
       :rowClick='rowClickCallback'
       :downloadDataButton='true'
       downloadDataFileType='csv'
-      :customSortRules='slotSortRules'
+      :customSortRules='customSortRules'
     >
       <template slot='fullName' slot-scope='{entry}'>
         {{ entry.first_name }} {{ entry.last_name }}
@@ -38,7 +38,7 @@ export default {
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
         { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName' },
       ],
-      slotSortRules: {
+      customSortRules: {
         fullName: (dataCopy, direction) => {
           dataCopy.sort((a, b) => String(`${a.first_name} ${a.last_name}`).localeCompare(String(`${b.first_name} ${b.last_name}`)));
           // .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
