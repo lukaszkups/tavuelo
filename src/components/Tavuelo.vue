@@ -73,7 +73,27 @@
               <span v-if='row[column.dataSource]' class='tavuelo-check-icon'>&check;</span>
               <span v-else class='tavuelo-cross-icon'>&cross;</span>
             </div>
+            <div
+              v-else-if='column.type === "slot"'
+              class='cell'
+            >
+              <slot
+                :name='column.slotName'
+                :entry='row'
+              ></slot>
+            </div>
           </td>
+        </tr>
+        <tr
+          v-if="!computedData || !computedData.length"
+          class='tavuelo-no-data-row'
+        >
+          <td v-if='useNoDataSlot'>
+            <slot
+              name='noDataSlot'
+            ></slot>
+          </td>
+          <td v-else>{{ noDataLabel }}</td>
         </tr>
       </tbody>
     </table>
@@ -191,6 +211,14 @@ export default {
       type: String,
       default: 'json', // available values: 'json', 'csv'
     },
+    noDataLabel: {
+      type: String,
+      default: 'No data',
+    },
+    useNoDataSlot: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     computedColumns() {
@@ -199,8 +227,34 @@ export default {
       }
       return [];
     },
+    computedDataColumns() {
+      const columns = [];
+      this.computedColumns.map(col => {
+        // check if there are any columns that contains computed value prop
+        if (Object.prototype.hasOwnProperty.call(col, 'computedValue')) {
+          columns.push({
+            name: col.dataSource,
+            computedValue: col.computedValue,
+          });
+        }
+      });
+      return columns;
+    },
+    // helper Boolean value
+    hasComputedDataColumns() {
+      return this.computedDataColumns && this.computedDataColumns.length;
+    },
     indexedData() {
       if (this.dataCopy && this.dataCopy.length) {
+        if (this.hasComputedDataColumns) {
+          return this.dataCopy.map((row, index) => {
+            const obj = { ...row, tavuelo_id: index };
+            this.computedDataColumns.map(col => {
+              obj[col.name] = col.computedValue(row);
+            });
+            return obj;
+          });
+        }
         return this.dataCopy.map((row, index) => ({ ...row, tavuelo_id: index }));
       }
       return [];
@@ -211,11 +265,16 @@ export default {
       }
       if (this.indexedData && this.indexedData.length) {
         let indexedDataCopy = [...this.indexedData];
-        indexedDataCopy = indexedDataCopy.filter(entry => {
-          if (this.searchCaseSensitive) {
+        // if case sensitive, then search through data as it is
+        if (this.searchCaseSensitive) {
+          indexedDataCopy = indexedDataCopy.filter(entry => {
             return this.searchColumns.find(searchColumn => String(entry[searchColumn]).includes(this.searchQuery));
-          }
-          const lowercaseQuery = this.searchQuery.toLowerCase();
+          });
+          return indexedDataCopy;
+        }
+        // if case insensitive, then lowercase everything
+        const lowercaseQuery = this.searchQuery.toLowerCase();
+        indexedDataCopy = indexedDataCopy.filter(entry => {
           return this.searchColumns.find(searchColumn => String(entry[searchColumn]).toLowerCase().includes(lowercaseQuery));
         });
         return indexedDataCopy;
@@ -284,7 +343,20 @@ export default {
       if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
         dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
       } else {
-        dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+        // check if column value needs computing
+        if (dataCopy[0] && !Object.prototype.hasOwnProperty.call(dataCopy[0], dataSourceName) && this.indexedData[0] && Object.prototype.hasOwnProperty.call(this.indexedData[0], dataSourceName)) {
+          const indexedDataCopy = [...this.indexedData];
+          indexedDataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+          // remove tavuelo_id prop
+          dataCopy = indexedDataCopy.map(obj => {
+            const objCopy = { ...obj };
+            delete objCopy.tavuelo_id;
+            return objCopy;
+          });
+        } else {
+          dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
+        }
+        // using .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
         if (direction === 'desc') {
           dataCopy.reverse();
         }
@@ -417,6 +489,12 @@ export default {
       tr:not(:last-of-type)
         td
           border-bottom: none
+      tr.tavuelo-no-data-row
+        td
+          text-align: center
+        &:hover
+          td
+            background-color: inherit
 
     &__download-data-wrapper
       display: inline-block

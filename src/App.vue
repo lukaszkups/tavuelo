@@ -5,7 +5,7 @@
       :data='tableData'
       :perPage='20'
       :hasSearch='true'
-      :searchColumns='["first_name", "last_name", "location", "age"]'
+      :searchColumns='["first_name", "last_name", "location", "age", "fullName", "login"]'
       :searchCaseSensitive='true'
       :wrapContent='true'
       defaultSortDataName='first_name'
@@ -13,7 +13,20 @@
       :rowClick='rowClickCallback'
       :downloadDataButton='true'
       downloadDataFileType='csv'
-    ></tavuelo>
+      :customSortRules='customSortRules'
+      :useNoDataSlot='true'
+    >
+      <template slot='noDataSlot'>There is no data here!</template>
+      <template slot='fullName' slot-scope='{entry}'>
+        {{ entry.first_name }} {{ entry.last_name }}
+      </template>
+      <template slot='email' slot-scope='{entry}'>
+        <a :href='`mailto:${entry.email}`'>{{ entry.email }}</a>
+      </template>
+      <template slot='login' slot-scope='{entry}'>
+        {{entry.first_name}}{{entry.age}}{{entry.last_name}}
+      </template>
+    </tavuelo>
   </div>
 </template>
 
@@ -31,7 +44,20 @@ export default {
         { title: 'Age', dataSource: 'age', width: '60px', onClick: this.cellClickCallback },
         { title: 'Location', dataSource: 'location' },
         { title: 'Active', dataSource: 'active', type: 'bool', tooltip: 'Information if user is active', width: '80px' },
+        { title: 'Full name', dataSource: 'fullName', type: 'slot', slotName: 'fullName', computedValue: row => `${row.first_name} ${row.last_name}` },
+        { title: 'E-mail', dataSource: 'email', type: 'slot', slotName: 'email' },
+        { title: 'Login', dataSource: 'login', type: 'slot', slotName: 'login', computedValue: row => `${row.first_name}${row.age}${row.last_name}` },
       ],
+      customSortRules: {
+        fullName: (dataCopy, direction) => {
+          dataCopy.sort((a, b) => String(`${a.first_name} ${a.last_name}`).localeCompare(String(`${b.first_name} ${b.last_name}`)));
+          // .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
+          if (direction === 'desc') {
+            dataCopy.reverse();
+          }
+          return dataCopy;
+        },
+      },
     };
   },
   computed: {

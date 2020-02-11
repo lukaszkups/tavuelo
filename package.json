@@ -1,10 +1,10 @@
 {
   "name": "tavuelo",
-  "version": "0.9.10",
-  "description": "Simple table component.",
+  "version": "0.10.0",
+  "description": "Easy to use but with advanced features a Vue.js table component.",
   "private": false,
   "author": "lukaszkups",
-  "homepage": "https://lukaszkups.net",
+  "homepage": "https://lukaszkups.net/notes/?category=tavuelo",
   "keywords": [
     "vue",
     "vue.js",
