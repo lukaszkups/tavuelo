@@ -14,7 +14,9 @@
       :downloadDataButton='true'
       downloadDataFileType='csv'
       :customSortRules='customSortRules'
+      :useNoDataSlot='true'
     >
+      <template slot='noDataSlot'>There is no data here!</template>
       <template slot='fullName' slot-scope='{entry}'>
         {{ entry.first_name }} {{ entry.last_name }}
       </template>

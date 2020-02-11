@@ -101,7 +101,9 @@ Extended example:
   defaultSortDataName='first_name'
   :clickHeaderToSort='true'
   :downloadDataButton='true'
+  :useNoDataSlot='true'
 >
+  <template slot='noDataSlot'>There is no data here!</template>
   <template slot='fullName' slot-scope='{entry}'>
     {{ entry.first_name }} {{ entry.last_name }}
   </template>
@@ -135,7 +137,7 @@ Extended example:
 |downloadDataButton|`false`|`true`|A boolean value that toggle visibility of button that triggers data download action|
 |downloadDataFileType|`json`|`csv`|A string value that determines if data is available to download as json or csv file|
 |noDataLabel|`No data`|`There is no results`|A string message that shows when there is no results/data in the table|
-|useNoDataSlot|`false`|`true`|A boolean value that toggle usage of slot block that will be visible when there won't be any results/data in the table. If it is set to `true` then tavuelo will use the slot block with `noDataSlot` name instead of displaying text that has been set in `noDataLabel` property|
+|useNoDataSlot|`false`|`true`|A boolean value that toggle usage of slot block that will be visible when there won't be any results/data in the table. If it is set to `true` then tavuelo will use the template block with `noDataSlot` slot name instead of displaying text that has been set in `noDataLabel` property|
 
 ## Table column definition
 
