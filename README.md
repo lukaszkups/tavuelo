@@ -1,4 +1,4 @@
-![img](/public/tavuelo-logo.svg)
+<img src="/public/tavuelo-logo.svg" alt="tavuelo logo" width="150px" />
 
 # tavuelo
 Easy to use but with advanced features a Vue.js table component
