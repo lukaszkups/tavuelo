@@ -1,3 +1,5 @@
+![img](/public/tavuelo-logo.svg)
+
 # tavuelo
 Easy to use but with advanced features a Vue.js table component
 
