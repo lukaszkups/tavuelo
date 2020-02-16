@@ -3,7 +3,7 @@
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
-      :perPage='20'
+      :perPage='10'
       :hasSearch='true'
       :searchColumns='["first_name", "last_name", "location", "age", "fullName", "login"]'
       :searchCaseSensitive='true'
