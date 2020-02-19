@@ -140,6 +140,7 @@ Extended example:
 |downloadDataFileType|`json`|`csv`|A string value that determines if data is available to download as json or csv file|
 |noDataLabel|`No data`|`There is no results`|A string message that shows when there is no results/data in the table|
 |useNoDataSlot|`false`|`true`|A boolean value that toggle usage of slot block that will be visible when there won't be any results/data in the table. If it is set to `true` then tavuelo will use the template block with `noDataSlot` slot name instead of displaying text that has been set in `noDataLabel` property|
+|showAllPages|`false`|`true`|A boolean value that toggle how pagination is displayed. By default it shows [First page][Prev page]Page [input which changes page that equals entered value on blur] of TOTAL_PAGES [Next page][Last page]. If set to `true`, it displays all clickable page numbers as separate buttons, e.g. [First page][Prev page][1][2][3][4][Next page][Last page]|
 
 ## Table column definition
 
