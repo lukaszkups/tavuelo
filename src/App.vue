@@ -15,6 +15,7 @@
       downloadDataFileType='csv'
       :customSortRules='customSortRules'
       :useNoDataSlot='true'
+      :showAllPages='true'
     >
       <template slot='noDataSlot'>There is no data here!</template>
       <template slot='fullName' slot-scope='{entry}'>

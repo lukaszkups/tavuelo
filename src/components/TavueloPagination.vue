@@ -14,7 +14,7 @@
       }]'
       @click='!Number.isNaN(activePage) && activePage !== 0 ? changePage(activePage - 1) : false'
     >&lsaquo;</li>
-    <template v-if='showAllPages || pageList.length < 6'>
+    <template v-if='showAllPages'>
       <li
         v-for='page in pageList'
         :key='page'
