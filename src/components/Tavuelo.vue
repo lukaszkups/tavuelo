@@ -97,48 +97,17 @@
         </tr>
       </tbody>
     </table>
-    <ul
+    <tavuelo-pagination
       v-if='hasPagination'
-      class='tavuelo__pagination'
-    >
-      <li
-        :class='["tavuelo__pagination--first-page", {
-          "disabled": !activePage || activePage === 0
-        }]'
-        @click='!Number.isNaN(activePage) && activePage !== 0 ? changePage(0) : false'
-      >&laquo;</li>
-      <li
-        :class='["tavuelo__pagination--previous-page", {
-          "disabled": !activePage || activePage === 0
-        }]'
-        @click='!Number.isNaN(activePage) && activePage !== 0 ? changePage(activePage - 1) : false'
-      >&lsaquo;</li>
-      <li
-        v-for='page in pageList'
-        :key='page'
-        :class='["tavuelo__pagination--page", {"active-page": page === activePage}]'
-        @click='changePage(page)'
-      >{{ page + 1 }}</li>
-      <li
-        :class='["tavuelo__pagination--next-page", {
-          "disabled": isNaN(activePage) || activePage === lastPage
-        }]'
-        @click='!Number.isNaN(activePage) && activePage < lastPage
-        ? changePage(activePage + 1)
-        : false'
-      >&rsaquo;</li>
-      <li
-        :class='["tavuelo__pagination--last-page", {
-          "disabled": isNaN(activePage) || activePage === lastPage
-        }]'
-        @click='!Number.isNaN(activePage) && activePage !== lastPage
-          ? changePage(lastPage)
-          : false'
-      >&raquo;</li>
-    </ul>
+      :activePage.sync='activePage'
+      :pageList='pageList'
+      :showAllPages='showAllPages'
+    ></tavuelo-pagination>
   </div>
 </template>
 <script>
+import TavueloPagination from '@/components/TavueloPagination.vue';
+
 export default {
   name: 'Tavuelo',
   data() {
@@ -149,6 +118,9 @@ export default {
       currentSortDataName: '',
       currentSortDirection: '',
     };
+  },
+  components: {
+    TavueloPagination,
   },
   props: {
     data: {
@@ -216,6 +188,10 @@ export default {
       default: 'No data',
     },
     useNoDataSlot: {
+      type: Boolean,
+      default: false,
+    },
+    showAllPages: {
       type: Boolean,
       default: false,
     },
@@ -320,14 +296,8 @@ export default {
       }
       return [];
     },
-    lastPage() {
-      return this.hasPagination && this.pageList.length ? this.pageList.length - 1 : 0;
-    },
   },
   methods: {
-    changePage(page) {
-      this.activePage = page;
-    },
     getComputedColumnStyle(column) {
       const styles = {};
       if (column.width) {
@@ -512,32 +482,6 @@ export default {
         &:hover
           cursor: pointer
           background: darken(#4ab2d6, 10)
-
-  .tavuelo__pagination
-    display: block
-    list-style-type: none
-    margin: 15px 0
-    padding: 0
-
-    li
-      display: inline-block
-      height: 20px
-      line-height: 20px
-      text-align: center
-      width: 20px
-
-      &:hover
-        cursor: pointer
-        font-weight: bold
-
-      &.active-page
-        font-weight: bold
-        text-decoration: underline
-
-      &.disabled
-        color: silver
-        &:hover
-          cursor: not-allowed
 
   .tavuelo__search
     display: inline-block
