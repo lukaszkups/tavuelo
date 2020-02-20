@@ -27,12 +27,12 @@
               v-if='selectAllRowsButton === true'
               class='tavuelo--select-all'
               @click='toggleSelectAll'
-            >Select all</span>
+            ></span>
             <span
               v-if='selectRowsOnPageButton === true'
-              class='tavuelo--select-all'
+              class='tavuelo--select-page'
               @click='toggleSelectPage'
-            >Select on page</span>
+            ></span>
           </th>
           <th
             v-for='column in computedColumns'
@@ -525,12 +525,19 @@ export default {
           border-bottom: none
 
           .tavuelo--select-all
-            font-size: 6px
-
+            &:before
+              content: 'All'
+          .tavuelo--select-page
+            margin-left: 5px
+            &:before
+              content: 'Page'
+          .tavuelo--select-all,
+          .tavuelo--select-page
             &:hover
               cursor: pointer
               text-decoration: underline
               color: crimson
+
 
       tr:not(:last-of-type)
         td
