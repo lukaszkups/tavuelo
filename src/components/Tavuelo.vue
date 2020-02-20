@@ -22,9 +22,10 @@
     >
       <thead>
         <tr>
+          <th v-if='selectableRows === true'></th>
           <th
             v-for='column in computedColumns'
-            :key='column.tavuelo_id'
+            :key='column[entryIdentifier]'
             :style='getComputedColumnStyle(column)'
             :class='{"column--has-sorting": clickHeaderToSort === true && searchColumns.includes(column.dataSource)}'
             @click='clickHeaderToSort === true && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
@@ -53,12 +54,20 @@
       <tbody>
         <tr
           v-for='row in computedData'
-          :key='row.tavuelo_id'
+          :key='row[entryIdentifier]'
           @click='rowClick && typeof rowClick === "function" ? rowClick(row) : false'
         >
+          <td v-if='selectableRows === true'>
+            <input
+              @click.stop='() => updateRowSelection(row[entryIdentifier])'
+              type='checkbox'
+              :value='row[entryIdentifier]'
+              v-model='selectedRows'
+            />
+          </td>
           <td
             v-for='column in computedColumns'
-            :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
+            :key='`${row[entryIdentifier]}-${column.tavuelo_id}`'
             :style='getComputedColumnStyle(column)'
             @click='onTableCellClick($event, column, row)'
           >
@@ -113,16 +122,21 @@ export default {
   data() {
     return {
       activePage: 0,
-      dataCopy: [],
+      indexedData: [],
       searchQuery: '',
       currentSortDataName: '',
       currentSortDirection: '',
+      selectedRows: [],
     };
   },
   components: {
     TavueloPagination,
   },
   props: {
+    entryIdentifier: {
+      type: String,
+      default: 'id',
+    },
     data: {
       type: Array,
       default: () => [],
@@ -195,11 +209,25 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectableRows: {
+      type: Boolean,
+      default: false,
+    },
+    selectAllRowsButton: {
+      type: Boolean,
+      default: false,
+    },
+    selectRowsOnPageButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     computedColumns() {
       if (this.columns && this.columns.length) {
-        return this.columns.map((col, index) => ({ ...col, tavuelo_id: index }));
+        return this.columns.map((col, index) => {
+          return { ...col, tavuelo_id: index };
+        });
       }
       return [];
     },
@@ -220,21 +248,21 @@ export default {
     hasComputedDataColumns() {
       return this.computedDataColumns && this.computedDataColumns.length;
     },
-    indexedData() {
-      if (this.dataCopy && this.dataCopy.length) {
-        if (this.hasComputedDataColumns) {
-          return this.dataCopy.map((row, index) => {
-            const obj = { ...row, tavuelo_id: index };
-            this.computedDataColumns.map(col => {
-              obj[col.name] = col.computedValue(row);
-            });
-            return obj;
-          });
-        }
-        return this.dataCopy.map((row, index) => ({ ...row, tavuelo_id: index }));
-      }
-      return [];
-    },
+    // indexedData() {
+    //   if (this.dataCopy && this.dataCopy.length) {
+    //     if (this.hasComputedDataColumns) {
+    //       return this.dataCopy.map(row => {
+    //         const obj = { ...row };
+    //         this.computedDataColumns.map(col => {
+    //           obj[col.name] = col.computedValue(row);
+    //         });
+    //         return obj;
+    //       });
+    //     }
+    //     return this.dataCopy
+    //   }
+    //   return [];
+    // },
     filteredData() {
       if (this.customFiltering && typeof this.customFiltering === 'function') {
         return this.customFiltering([...this.indexedData], this.searchQuery);
@@ -309,29 +337,17 @@ export default {
       return styles;
     },
     sortData(dataSourceName = this.currentSortDataName, direction = this.currentSortDirection) {
-      let dataCopy = [...this.dataCopy];
+      let dataCopy = [...this.indexedData];
       if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
         dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
       } else {
-        // check if column value needs computing
-        if (dataCopy[0] && !Object.prototype.hasOwnProperty.call(dataCopy[0], dataSourceName) && this.indexedData[0] && Object.prototype.hasOwnProperty.call(this.indexedData[0], dataSourceName)) {
-          const indexedDataCopy = [...this.indexedData];
-          indexedDataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
-          // remove tavuelo_id prop
-          dataCopy = indexedDataCopy.map(obj => {
-            const objCopy = { ...obj };
-            delete objCopy.tavuelo_id;
-            return objCopy;
-          });
-        } else {
-          dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
-        }
+        dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
         // using .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
         if (direction === 'desc') {
           dataCopy.reverse();
         }
       }
-      this.dataCopy = dataCopy;
+      this.indexedData = dataCopy;
     },
     toggleSorting(column) {
       if (column.dataSource === this.currentSortDataName) {
@@ -380,17 +396,28 @@ export default {
         document.body.removeChild(elem);
       }
     },
+    updateRowSelection(rowId) {
+      const selectedRowsCopy = [...this.selectedRows];
+      const index = selectedRowsCopy.indexOf(rowId);
+      if (index > -1) {
+        selectedRowsCopy.splice(index, 1);
+      } else {
+        selectedRowsCopy.push(rowId);
+      }
+      this.selectedRows = selectedRowsCopy;
+      this.$forceUpdate();
+    },
   },
   watch: {
     filteredData() {
       this.activePage = 0;
     },
     data(newVal) {
-      this.dataCopy = [...newVal];
+      this.indexedData = [...newVal];
     },
   },
   created() {
-    this.dataCopy = [...this.data];
+    this.indexedData = [...this.data];
     this.currentSortDataName = this.defaultSortDataName;
     this.currentSortDirection = this.defaultSortDirection;
     this.sortData();

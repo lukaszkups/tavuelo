@@ -16,6 +16,9 @@
       :customSortRules='customSortRules'
       :useNoDataSlot='true'
       :showAllPages='true'
+      :selectableRows='true'
+      :selectAllRowsButton='true'
+      :selectRowsOnPageButton='true'
     >
       <template slot='noDataSlot'>There is no data here!</template>
       <template slot='fullName' slot-scope='{entry}'>
