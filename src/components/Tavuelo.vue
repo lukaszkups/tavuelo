@@ -22,7 +22,18 @@
     >
       <thead>
         <tr>
-          <th v-if='selectableRows === true'></th>
+          <th v-if='selectableRows === true'>
+            <span
+              v-if='selectAllRowsButton === true'
+              class='tavuelo--select-all'
+              @click='toggleSelectAll'
+            >Select all</span>
+            <span
+              v-if='selectRowsOnPageButton === true'
+              class='tavuelo--select-all'
+              @click='toggleSelectPage'
+            >Select on page</span>
+          </th>
           <th
             v-for='column in computedColumns'
             :key='column[entryIdentifier]'
@@ -126,7 +137,6 @@ export default {
       searchQuery: '',
       currentSortDataName: '',
       currentSortDirection: '',
-      selectedRows: [],
     };
   },
   components: {
@@ -221,6 +231,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectedRows: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     computedColumns() {
@@ -248,21 +262,6 @@ export default {
     hasComputedDataColumns() {
       return this.computedDataColumns && this.computedDataColumns.length;
     },
-    // indexedData() {
-    //   if (this.dataCopy && this.dataCopy.length) {
-    //     if (this.hasComputedDataColumns) {
-    //       return this.dataCopy.map(row => {
-    //         const obj = { ...row };
-    //         this.computedDataColumns.map(col => {
-    //           obj[col.name] = col.computedValue(row);
-    //         });
-    //         return obj;
-    //       });
-    //     }
-    //     return this.dataCopy
-    //   }
-    //   return [];
-    // },
     filteredData() {
       if (this.customFiltering && typeof this.customFiltering === 'function') {
         return this.customFiltering([...this.indexedData], this.searchQuery);
@@ -323,6 +322,14 @@ export default {
         return [...Array(amountOfPages).keys()];
       }
       return [];
+    },
+    localSelectedRows: {
+      get() {
+        return this.selectedRows;
+      },
+      set(newVal) {
+        this.$emit('update:selectedRows', newVal);
+      },
     },
   },
   methods: {
@@ -397,15 +404,49 @@ export default {
       }
     },
     updateRowSelection(rowId) {
-      const selectedRowsCopy = [...this.selectedRows];
+      const selectedRowsCopy = [...this.localSelectedRows];
       const index = selectedRowsCopy.indexOf(rowId);
       if (index > -1) {
         selectedRowsCopy.splice(index, 1);
       } else {
         selectedRowsCopy.push(rowId);
       }
-      this.selectedRows = selectedRowsCopy;
+      this.localSelectedRows = selectedRowsCopy;
       this.$forceUpdate();
+    },
+    toggleSelectAll() {
+      if (this.localSelectedRows.length === this.indexedData.length) {
+        this.localSelectedRows = [];
+      } else {
+        const data = [];
+        this.indexedData.map(entry => {
+          data.push(entry[this.entryIdentifier]);
+        });
+        this.localSelectedRows = data;
+      }
+    },
+    toggleSelectPage() {
+      // check if all entries of current page are selected
+      let pageSelected = true;
+      const missingEntries = [];
+      const selectedCopy = [...this.localSelectedRows];
+      this.computedData.map(row => {
+        if (!this.localSelectedRows.includes(row[this.entryIdentifier])) {
+          pageSelected = false;
+          // save IDs of entries that are not yet selected on current page
+          missingEntries.push(row[this.entryIdentifier]);
+        }
+      });
+      // if all entries from page are selected, then deselect them
+      if (pageSelected) {
+        this.computedData.map(row => {
+          const index = selectedCopy.findIndex(id => id === row[this.entryIdentifier]);
+          selectedCopy.splice(index, 1);
+        });
+        this.localSelectedRows = selectedCopy;
+      } else {
+        this.localSelectedRows = selectedCopy.concat(missingEntries);
+      }
     },
   },
   watch: {
@@ -482,6 +523,14 @@ export default {
 
         th
           border-bottom: none
+
+          .tavuelo--select-all
+            font-size: 6px
+
+            &:hover
+              cursor: pointer
+              text-decoration: underline
+              color: crimson
 
       tr:not(:last-of-type)
         td
