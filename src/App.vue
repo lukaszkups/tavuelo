@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div>{{ selectedArr }}</div>
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
@@ -15,7 +16,10 @@
       downloadDataFileType='csv'
       :customSortRules='customSortRules'
       :useNoDataSlot='true'
-      :showAllPages='true'
+      :selectableRows='true'
+      :selectAllRowsButton='true'
+      :selectRowsOnPageButton='true'
+      :selectedRows.sync='selectedArr'
     >
       <template slot='noDataSlot'>There is no data here!</template>
       <template slot='fullName' slot-scope='{entry}'>
@@ -59,6 +63,7 @@ export default {
           return dataCopy;
         },
       },
+      selectedArr: [],
     };
   },
   computed: {

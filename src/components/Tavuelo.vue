@@ -22,9 +22,21 @@
     >
       <thead>
         <tr>
+          <th v-if='selectableRows === true'>
+            <span
+              v-if='selectAllRowsButton === true'
+              class='tavuelo--select-all'
+              @click='toggleSelectAll'
+            ></span>
+            <span
+              v-if='selectRowsOnPageButton === true'
+              class='tavuelo--select-page'
+              @click='toggleSelectPage'
+            ></span>
+          </th>
           <th
             v-for='column in computedColumns'
-            :key='column.tavuelo_id'
+            :key='column[entryIdentifier]'
             :style='getComputedColumnStyle(column)'
             :class='{"column--has-sorting": clickHeaderToSort === true && searchColumns.includes(column.dataSource)}'
             @click='clickHeaderToSort === true && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
@@ -53,12 +65,20 @@
       <tbody>
         <tr
           v-for='row in computedData'
-          :key='row.tavuelo_id'
+          :key='row[entryIdentifier]'
           @click='rowClick && typeof rowClick === "function" ? rowClick(row) : false'
         >
+          <td v-if='selectableRows === true'>
+            <input
+              @click.stop='() => updateRowSelection(row[entryIdentifier])'
+              type='checkbox'
+              :value='row[entryIdentifier]'
+              v-model='selectedRows'
+            />
+          </td>
           <td
             v-for='column in computedColumns'
-            :key='`${row.tavuelo_id}-${column.tavuelo_id}`'
+            :key='`${row[entryIdentifier]}-${column.tavuelo_id}`'
             :style='getComputedColumnStyle(column)'
             @click='onTableCellClick($event, column, row)'
           >
@@ -113,7 +133,7 @@ export default {
   data() {
     return {
       activePage: 0,
-      dataCopy: [],
+      indexedData: [],
       searchQuery: '',
       currentSortDataName: '',
       currentSortDirection: '',
@@ -123,6 +143,10 @@ export default {
     TavueloPagination,
   },
   props: {
+    entryIdentifier: {
+      type: String,
+      default: 'id',
+    },
     data: {
       type: Array,
       default: () => [],
@@ -195,11 +219,29 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectableRows: {
+      type: Boolean,
+      default: false,
+    },
+    selectAllRowsButton: {
+      type: Boolean,
+      default: false,
+    },
+    selectRowsOnPageButton: {
+      type: Boolean,
+      default: false,
+    },
+    selectedRows: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     computedColumns() {
       if (this.columns && this.columns.length) {
-        return this.columns.map((col, index) => ({ ...col, tavuelo_id: index }));
+        return this.columns.map((col, index) => {
+          return { ...col, tavuelo_id: index };
+        });
       }
       return [];
     },
@@ -219,21 +261,6 @@ export default {
     // helper Boolean value
     hasComputedDataColumns() {
       return this.computedDataColumns && this.computedDataColumns.length;
-    },
-    indexedData() {
-      if (this.dataCopy && this.dataCopy.length) {
-        if (this.hasComputedDataColumns) {
-          return this.dataCopy.map((row, index) => {
-            const obj = { ...row, tavuelo_id: index };
-            this.computedDataColumns.map(col => {
-              obj[col.name] = col.computedValue(row);
-            });
-            return obj;
-          });
-        }
-        return this.dataCopy.map((row, index) => ({ ...row, tavuelo_id: index }));
-      }
-      return [];
     },
     filteredData() {
       if (this.customFiltering && typeof this.customFiltering === 'function') {
@@ -296,6 +323,14 @@ export default {
       }
       return [];
     },
+    localSelectedRows: {
+      get() {
+        return this.selectedRows;
+      },
+      set(newVal) {
+        this.$emit('update:selectedRows', newVal);
+      },
+    },
   },
   methods: {
     getComputedColumnStyle(column) {
@@ -309,29 +344,17 @@ export default {
       return styles;
     },
     sortData(dataSourceName = this.currentSortDataName, direction = this.currentSortDirection) {
-      let dataCopy = [...this.dataCopy];
+      let dataCopy = [...this.indexedData];
       if (this.customSortRules && Object.prototype.hasOwnProperty.call(this.customSortRules, dataSourceName)) {
         dataCopy = this.customSortRules[dataSourceName](dataCopy, direction);
       } else {
-        // check if column value needs computing
-        if (dataCopy[0] && !Object.prototype.hasOwnProperty.call(dataCopy[0], dataSourceName) && this.indexedData[0] && Object.prototype.hasOwnProperty.call(this.indexedData[0], dataSourceName)) {
-          const indexedDataCopy = [...this.indexedData];
-          indexedDataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
-          // remove tavuelo_id prop
-          dataCopy = indexedDataCopy.map(obj => {
-            const objCopy = { ...obj };
-            delete objCopy.tavuelo_id;
-            return objCopy;
-          });
-        } else {
-          dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
-        }
+        dataCopy.sort((a, b) => String(a[dataSourceName]).localeCompare(String(b[dataSourceName])));
         // using .sort and then .reverse is currently most efficient way if sort direction is set to `desc`
         if (direction === 'desc') {
           dataCopy.reverse();
         }
       }
-      this.dataCopy = dataCopy;
+      this.indexedData = dataCopy;
     },
     toggleSorting(column) {
       if (column.dataSource === this.currentSortDataName) {
@@ -380,17 +403,62 @@ export default {
         document.body.removeChild(elem);
       }
     },
+    updateRowSelection(rowId) {
+      const selectedRowsCopy = [...this.localSelectedRows];
+      const index = selectedRowsCopy.indexOf(rowId);
+      if (index > -1) {
+        selectedRowsCopy.splice(index, 1);
+      } else {
+        selectedRowsCopy.push(rowId);
+      }
+      this.localSelectedRows = selectedRowsCopy;
+      this.$forceUpdate();
+    },
+    toggleSelectAll() {
+      if (this.localSelectedRows.length === this.indexedData.length) {
+        this.localSelectedRows = [];
+      } else {
+        const data = [];
+        this.indexedData.map(entry => {
+          data.push(entry[this.entryIdentifier]);
+        });
+        this.localSelectedRows = data;
+      }
+    },
+    toggleSelectPage() {
+      // check if all entries of current page are selected
+      let pageSelected = true;
+      const missingEntries = [];
+      const selectedCopy = [...this.localSelectedRows];
+      this.computedData.map(row => {
+        if (!this.localSelectedRows.includes(row[this.entryIdentifier])) {
+          pageSelected = false;
+          // save IDs of entries that are not yet selected on current page
+          missingEntries.push(row[this.entryIdentifier]);
+        }
+      });
+      // if all entries from page are selected, then deselect them
+      if (pageSelected) {
+        this.computedData.map(row => {
+          const index = selectedCopy.findIndex(id => id === row[this.entryIdentifier]);
+          selectedCopy.splice(index, 1);
+        });
+        this.localSelectedRows = selectedCopy;
+      } else {
+        this.localSelectedRows = selectedCopy.concat(missingEntries);
+      }
+    },
   },
   watch: {
     filteredData() {
       this.activePage = 0;
     },
     data(newVal) {
-      this.dataCopy = [...newVal];
+      this.indexedData = [...newVal];
     },
   },
   created() {
-    this.dataCopy = [...this.data];
+    this.indexedData = [...this.data];
     this.currentSortDataName = this.defaultSortDataName;
     this.currentSortDirection = this.defaultSortDirection;
     this.sortData();
@@ -455,6 +523,21 @@ export default {
 
         th
           border-bottom: none
+
+          .tavuelo--select-all
+            &:before
+              content: 'All'
+          .tavuelo--select-page
+            margin-left: 5px
+            &:before
+              content: 'Page'
+          .tavuelo--select-all,
+          .tavuelo--select-page
+            &:hover
+              cursor: pointer
+              text-decoration: underline
+              color: crimson
+
 
       tr:not(:last-of-type)
         td
