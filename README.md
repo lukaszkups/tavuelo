@@ -141,6 +141,10 @@ Extended example:
 |noDataLabel|`No data`|`There is no results`|A string message that shows when there is no results/data in the table|
 |useNoDataSlot|`false`|`true`|A boolean value that toggle usage of slot block that will be visible when there won't be any results/data in the table. If it is set to `true` then tavuelo will use the template block with `noDataSlot` slot name instead of displaying text that has been set in `noDataLabel` property|
 |showAllPages|`false`|`true`|A boolean value that toggle how pagination is displayed. By default it shows [First page][Prev page]Page [input which changes page that equals entered value on blur] of TOTAL_PAGES [Next page][Last page]. If set to `true`, it displays all clickable page numbers as separate buttons, e.g. [First page][Prev page][1][2][3][4][5][Next page][Last page]|
+|selectableRows|`false`|`true`|A boolean value that enable or disable row selection feature. Once enabled, an extra column will be added at the beginning of each row with checkbox input|
+|selectedRows.sync|`[]`|`[1, 2, 5]`|Array that contains IDs of entries which are selected. On change, tavuelo emits updated array so thanks to `.sync` modifier you can use this value in your application. Works only if `selectableRows` prop is `true`|
+|selectAllRowsButton|`false`|`true`|A boolean value that toggle visibility of `Select all` button in the selection column header. Once clicked, it will select all available records (or if all are already selected, it will deselect it) and update `selectedRows` prop. Button label can be set via CSS :before `content` property.|
+|selectRowsOnPageButton|`false`|`true`|A boolean value that toggle visibility of `Select all on page` button in the selection column header. Once clicked, it will select all records that are displayed on current page (or if all are already selected, it will deselect it) and update `selectedRows` prop. Button label can be set via CSS :before `content` property.|
 
 ## Table column definition
 
