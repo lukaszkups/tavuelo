@@ -405,6 +405,7 @@ export default {
     },
     updateRowSelection(rowId) {
       const selectedRowsCopy = [...this.localSelectedRows];
+      const activePageCopy = Number(this.activePage);
       const index = selectedRowsCopy.indexOf(rowId);
       if (index > -1) {
         selectedRowsCopy.splice(index, 1);
@@ -412,9 +413,12 @@ export default {
         selectedRowsCopy.push(rowId);
       }
       this.localSelectedRows = selectedRowsCopy;
-      this.$forceUpdate();
+      this.$nextTick(() => {
+        this.activePage = activePageCopy;
+      });
     },
     toggleSelectAll() {
+      const activePageCopy = Number(this.activePage);
       if (this.localSelectedRows.length === this.indexedData.length) {
         this.localSelectedRows = [];
       } else {
@@ -424,12 +428,16 @@ export default {
         });
         this.localSelectedRows = data;
       }
+      this.$nextTick(() => {
+        this.activePage = activePageCopy;
+      });
     },
     toggleSelectPage() {
       // check if all entries of current page are selected
       let pageSelected = true;
       const missingEntries = [];
       const selectedCopy = [...this.localSelectedRows];
+      const activePageCopy = Number(this.activePage);
       this.computedData.map(row => {
         if (!this.localSelectedRows.includes(row[this.entryIdentifier])) {
           pageSelected = false;
@@ -447,6 +455,9 @@ export default {
       } else {
         this.localSelectedRows = selectedCopy.concat(missingEntries);
       }
+      this.$nextTick(() => {
+        this.activePage = activePageCopy;
+      });
     },
   },
   watch: {
