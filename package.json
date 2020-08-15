@@ -1,6 +1,6 @@
 {
   "name": "tavuelo",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Easy to use but with advanced features a Vue.js table component.",
   "private": false,
   "author": "lukaszkups",
@@ -11,7 +11,10 @@
     "table",
     "datatable",
     "data",
-    "data table"
+    "data table",
+    "plugin",
+    "table plugin",
+    "grid"
   ],
   "repository": "github:lukaszkups/tavuelo",
   "main": "dist/tavuelo.umd.min.js",
@@ -28,21 +31,21 @@
     "build-bundle": "vue-cli-service build --target lib --name tavuelo ./src/index.js"
   },
   "dependencies": {
-    "core-js": "^2.6.11",
+    "core-js": "^3.6.5",
     "vue": "^2.6.11"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-service": "^3.12.1",
+    "@vue/cli-plugin-babel": "^4.5.3",
+    "@vue/cli-plugin-eslint": "^4.5.3",
+    "@vue/cli-service": "^4.5.3",
     "@vue/eslint-config-airbnb": "^4.0.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
+    "acorn": "^8.0.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.7.0",
     "eslint-plugin-vue": "^5.0.0",
-    "node-sass": "^4.13.1",
-    "sass-loader": "^7.3.1",
-    "vue-template-compiler": "^2.6.11",
-    "acorn": ">=6.4.1",
-    "minimist": ">=1.2.3"
+    "minimist": ">=1.2.3",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^9.0.3",
+    "vue-template-compiler": "^2.6.11"
   }
 }
