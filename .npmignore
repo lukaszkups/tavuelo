@@ -1,0 +1,9 @@
+node_modules/
+public/
+src/
+.browserslistrc
+.eslintrc.js
+.gitignore
+babel.config.js
+postcss.config.js
+vue.config.js
