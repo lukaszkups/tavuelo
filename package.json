@@ -28,7 +28,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && npm run build-bundle",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --target lib --name tavuelo ./src/index.js"
+    "build-bundle": "vue-cli-service build --target lib --formats umd-min --name tavuelo ./src/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
