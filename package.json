@@ -1,6 +1,6 @@
 {
   "name": "tavuelo",
-  "version": "0.12.6",
+  "version": "0.12.7",
   "description": "Easy to use but with advanced features a Vue.js table component.",
   "private": false,
   "author": "lukaszkups",
@@ -32,12 +32,12 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.12"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.3",
-    "@vue/cli-plugin-eslint": "^4.5.3",
-    "@vue/cli-service": "^4.5.3",
+    "@vue/cli-plugin-babel": "^4.5.4",
+    "@vue/cli-plugin-eslint": "^4.5.4",
+    "@vue/cli-service": "^4.5.4",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "acorn": "^8.0.1",
     "babel-eslint": "^10.1.0",
@@ -46,6 +46,6 @@
     "minimist": ">=1.2.3",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.3",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   }
 }

@@ -104,6 +104,7 @@ Extended example:
   :clickHeaderToSort='true'
   :downloadDataButton='true'
   :useNoDataSlot='true'
+  :sortColumns='["first_name", "last_name", "location", "age", "fullName", "login"]'
 >
   <template slot='noDataSlot'>There is no data here!</template>
   <template slot='fullName' slot-scope='{entry}'>
@@ -127,8 +128,10 @@ Extended example:
 |perPage|`0`|`20`|A number that defines how many items should be displayed on each pagination when pagination is enabled (`0` disables pagination|
 |hasSearch|`false`|`true`|A boolean value which sets if table should have search functionality (it will display a search input above the table|
 |customFiltering|`n/a`|`(data, searchQuery) => {...}`|A function that is executed instead of default filtering while search. It takes two parameters: copy of table's data (array) and string that is the search input value|
-|searchColumns|`[]`|`['first_name, 'last_name', 'location']|`|An array that contains string names of column's data sources|
+|searchColumns|`[]`|`['first_name, 'last_name', 'location']|`|An array that contains string names of column's data sources which points out which columns are included while performing data search|
 |searchCaseSensitive|`false`|`true`|A boolean value to set if search string should be case sensitive or not|
+|sortColumns|`[]`|`['first_name, 'last_name', 'location']|`|An array that contains string names of column's data sources whitch points out which columns have sort feature enabled|
+|sortAllColumns|`false`|`true`|A boolean value which indicates if we want to enable sorting for our table for all columns out of the box or not|
 |useFlex|`true`|`false`|A boolean value to set if table columns should behave like flex elements (e.g. columns won't resize on page change)|
 |wrapContent|`false`|`true`|A boolean value that adds ellipsis effect to each table cell if content overflows max column width|
 |defaultSortDataName|`''`|`'first_name'`|A string value that points on column's data source that should be default sorting based on|

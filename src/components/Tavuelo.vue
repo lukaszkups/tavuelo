@@ -38,8 +38,8 @@
             v-for='column in computedColumns'
             :key='column[entryIdentifier]'
             :style='getComputedColumnStyle(column)'
-            :class='{"column--has-sorting": clickHeaderToSort === true && searchColumns.includes(column.dataSource)}'
-            @click='clickHeaderToSort === true && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
+            :class='{"column--has-sorting": clickHeaderToSort === true && localSortColumns.includes(column.dataSource)}'
+            @click='clickHeaderToSort === true && localSortColumns.includes(column.dataSource) ? toggleSorting(column) : false'
           >
             <div class='cell'>
               <div v-if='column.tooltip'>
@@ -50,13 +50,13 @@
               </div>
               <div v-else>{{ column.title }}</div>
               <div
-                v-if='searchColumns.includes(column.dataSource)'
+                v-if='localSortColumns.includes(column.dataSource)'
                 :class='["tavuelo-sorting", {
                   "tavuelo-sorting__active": column.dataSource === currentSortDataName,
                   "sorting-asc": column.dataSource === currentSortDataName && currentSortDirection === "asc",
                   "sorting-desc": column.dataSource === currentSortDataName && currentSortDirection === "desc",
                 }]'
-                @click='clickHeaderToSort === false && searchColumns.includes(column.dataSource) ? toggleSorting(column) : false'
+                @click='clickHeaderToSort === false && localSortColumns.includes(column.dataSource) ? toggleSorting(column) : false'
               ></div>
             </div>
           </th>
@@ -174,6 +174,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    sortColumns: {
+      type: Array,
+      default: () => [],
+    },
     useFlex: {
       type: Boolean,
       default: true,
@@ -234,6 +238,10 @@ export default {
     selectedRows: {
       type: Array,
       default: () => [],
+    },
+    sortAllColumns: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -330,6 +338,12 @@ export default {
       set(newVal) {
         this.$emit('update:selectedRows', newVal);
       },
+    },
+    localSortColumns() {
+      if (this.sortAllColumns === true) {
+        return this.computedColumns.map(column => column.dataSource);
+      }
+      return this.sortColumns;
     },
   },
   methods: {
