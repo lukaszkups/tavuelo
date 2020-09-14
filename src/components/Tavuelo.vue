@@ -108,12 +108,18 @@
           v-if="!computedData || !computedData.length"
           class='tavuelo-no-data-row'
         >
-          <td v-if='useNoDataSlot'>
+          <td
+            v-if='useNoDataSlot'
+            :colspan="noDataColspan"
+          >
             <slot
               name='noDataSlot'
             ></slot>
           </td>
-          <td v-else>{{ noDataLabel }}</td>
+          <td
+            v-else
+            :colspan="noDataColspan"
+          >{{ noDataLabel }}</td>
         </tr>
       </tbody>
     </table>
@@ -245,6 +251,9 @@ export default {
     },
   },
   computed: {
+    noDataColspan() {
+      return this.computedColumns && Array.isArray(this.computedColumns) ? this.computedColumns.length : 1;
+    },
     computedColumns() {
       if (this.columns && this.columns.length) {
         return this.columns.map((col, index) => {
