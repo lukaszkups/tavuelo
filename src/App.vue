@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>{{ selectedArr }}</div>
+    <div><strong>Selected entries:</strong> {{ selectedArr }}</div>
     <tavuelo
       :columns='tableColumns'
       :data='tableData'
@@ -21,6 +21,7 @@
       :selectAllRowsButton='true'
       :selectRowsOnPageButton='true'
       :selectedRows.sync='selectedArr'
+      @page-update="data => this.currentPage = data"
     >
       <template slot='noDataSlot'>There is no data here!</template>
       <template slot='fullName' slot-scope='{entry}'>
@@ -33,6 +34,8 @@
         {{entry.first_name}}{{entry.age}}{{entry.last_name}}
       </template>
     </tavuelo>
+    <div><strong>Current page data:</strong></div>
+    <div>{{ currentPage }}</div>
   </div>
 </template>
 
@@ -65,6 +68,7 @@ export default {
         },
       },
       selectedArr: [],
+      currentPage: {},
     };
   },
   computed: {

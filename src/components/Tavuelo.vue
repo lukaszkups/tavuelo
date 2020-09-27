@@ -482,13 +482,30 @@ export default {
         this.activePage = activePageCopy;
       });
     },
+    emitPageUpdate() {
+      this.$emit('page-update', { page: Number(this.activePage), data: [...this.computedData] });
+    },
   },
   watch: {
-    filteredData() {
-      this.activePage = 0;
+    filteredData(newVal, oldVal) {
+      if (!newVal || (newVal && oldVal && newVal.length !== oldVal.length) || (newVal && !oldVal)) {
+        this.activePage = 0;
+      }
     },
     data(newVal) {
       this.indexedData = [...newVal];
+    },
+    activePage() {
+      this.emitPageUpdate();
+    },
+    searchQuery() {
+      this.emitPageUpdate();
+    },
+    currentSortDataName() {
+      this.emitPageUpdate();
+    },
+    currentSortDirection() {
+      this.emitPageUpdate();
     },
   },
   created() {
