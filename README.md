@@ -105,6 +105,7 @@ Extended example:
   :downloadDataButton='true'
   :useNoDataSlot='true'
   :sortColumns='["first_name", "last_name", "location", "age", "fullName", "login"]'
+  @page-update="data => this.currentPage = data"
 >
   <template slot='noDataSlot'>There is no data here!</template>
   <template slot='fullName' slot-scope='{entry}'>
@@ -120,6 +121,8 @@ Extended example:
 # API
 
 ## Table component
+
+### Component props
 
 |Component's prop|Default value|Value examples|Description|
 | --- | --- | --- | --- |
@@ -148,6 +151,11 @@ Extended example:
 |selectedRows.sync|`[]`|`[1, 2, 5]`|Array that contains IDs of entries which are selected. On change, tavuelo emits updated array so thanks to `.sync` modifier you can use this value in your application. Works only if `selectableRows` prop is `true`|
 |selectAllRowsButton|`false`|`true`|A boolean value that toggle visibility of `Select all` button in the selection column header. Once clicked, it will select all available records (or if all are already selected, it will deselect it) and update `selectedRows` prop. Button label can be set via CSS :before `content` property.|
 |selectRowsOnPageButton|`false`|`true`|A boolean value that toggle visibility of `Select all on page` button in the selection column header. Once clicked, it will select all records that are displayed on current page (or if all are already selected, it will deselect it) and update `selectedRows` prop. Button label can be set via CSS :before `content` property.|
+
+### Component events
+
+|Event name|Callback value example|Usage example|Description|
+|page-update|`{page: 2, data: [{ "first_name": "Armando", "last_name": "Petty", "age": 39, "location": "Saharanpur", "active": 1, "joined": "1994-05-06T11:42:08-07:00", "email": "cubilia.Curae@montesnascetur.co.uk", "phone": 394249077, "id": 46 }, { "first_name": "August", "last_name": "Rollins", "age": 66, "location": "Lansing", "active": 1, "joined": "1985-10-24T20:12:52-07:00", "email": "orci.Donec.nibh@urnaet.co.uk", "phone": 709236404, "id": 53 }]}`| `@page-update="handlePageUpdateData"` or `@page-update="data => currentPageDetails = data"`|Event that is triggered when active page or its content are being changed (so on page/sort/filter change). It emits the object with given structure: `{page: <page-number>, data: <array-containing-data-that-is-being-displayed-on-current-page>}`|
 
 ## Table column definition
 
