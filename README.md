@@ -155,6 +155,7 @@ Extended example:
 ### Component events
 
 |Event name|Callback value example|Usage example|Description|
+| --- | --- | --- | --- |
 |page-update|`{page: 2, data: [{ "first_name": "Armando", "last_name": "Petty", "age": 39, "location": "Saharanpur", "active": 1, "joined": "1994-05-06T11:42:08-07:00", "email": "cubilia.Curae@montesnascetur.co.uk", "phone": 394249077, "id": 46 }, { "first_name": "August", "last_name": "Rollins", "age": 66, "location": "Lansing", "active": 1, "joined": "1985-10-24T20:12:52-07:00", "email": "orci.Donec.nibh@urnaet.co.uk", "phone": 709236404, "id": 53 }]}`| `@page-update="handlePageUpdateData"` or `@page-update="data => currentPageDetails = data"`|Event that is triggered when active page or its content are being changed (so on page/sort/filter change). It emits the object with given structure: `{page: <page-number>, data: <array-containing-data-that-is-being-displayed-on-current-page>}`|
 
 ## Table column definition
