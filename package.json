@@ -1,20 +1,6 @@
 {
   "name": "tavuelo",
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   "version": "0.12.8",
-=======
-=======
->>>>>>> Stashed changes
-<<<<<<< HEAD
-  "version": "0.12.5",
-=======
-  "version": "0.12.8",
->>>>>>> d16878c3efd5d7d3c1af6ce0342dadbf69eaf22b
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   "description": "Easy to use but with advanced features a Vue.js table component.",
   "private": false,
   "author": "lukaszkups",
