@@ -1,6 +1,6 @@
 {
   "name": "tavuelo",
-  "version": "0.12.13",
+  "version": "0.12.14",
   "description": "Easy to use but with advanced features a Vue.js table component.",
   "private": false,
   "author": "lukaszkups",
@@ -46,7 +46,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.14.0",
     "eslint-plugin-vue": "^5.0.0",
-    "minimist": ">=1.2.3",
+    "minimist": "^1.2.6",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.3",
     "vue-template-compiler": "^2.6.12"
